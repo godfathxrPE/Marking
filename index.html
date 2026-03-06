@@ -1,0 +1,2318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Промышленная маркировка — Первый Бит</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #E8007D;
+    --pink-light: #FF1A8C;
+    --pink-dark: #C0006A;
+    --pink-glow: rgba(232,0,125,0.15);
+    --black: #0A0A0A;
+    --gray-900: #111111;
+    --gray-800: #1A1A1A;
+    --gray-700: #2A2A2A;
+    --gray-200: #E5E5E5;
+    --gray-100: #F5F5F5;
+    --white: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Golos Text', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ───────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(232,0,125,0.2);
+  }
+  .logo {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+    color: var(--white);
+  }
+  .logo span { color: var(--pink); }
+  nav ul { display: flex; gap: 32px; list-style: none; }
+  nav a {
+    font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.6); text-decoration: none;
+    text-transform: uppercase; transition: color .2s;
+  }
+  nav a:hover { color: var(--pink); }
+
+  /* ── HERO ──────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 140px 48px 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(232,0,125,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(232,0,125,0.08) 0%, transparent 60%),
+      linear-gradient(160deg, #0A0A0A 0%, #111111 100%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.04;
+    background-image:
+      linear-gradient(var(--pink) 1px, transparent 1px),
+      linear-gradient(90deg, var(--pink) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 900px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(232,0,125,0.12); border: 1px solid rgba(232,0,125,0.3);
+    color: var(--pink); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 100px;
+    margin-bottom: 32px;
+    animation: fadeUp .6s ease forwards;
+  }
+  .hero-badge::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--pink); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+  h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(36px, 6vw, 80px);
+    font-weight: 900; line-height: 1.05;
+    letter-spacing: -0.02em;
+    animation: fadeUp .7s ease .1s both;
+  }
+  h1 em { font-style: normal; color: var(--pink); }
+  .hero-sub {
+    margin-top: 24px; max-width: 560px;
+    font-size: 18px; line-height: 1.6;
+    color: rgba(255,255,255,0.65);
+    animation: fadeUp .7s ease .2s both;
+  }
+  .hero-cta {
+    display: flex; gap: 16px; margin-top: 48px; flex-wrap: wrap;
+    animation: fadeUp .7s ease .3s both;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--pink); color: var(--white);
+    font-family: 'Unbounded', sans-serif; font-size: 12px;
+    font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 16px 32px; border-radius: 4px;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: all .25s;
+  }
+  .btn-primary:hover { background: var(--pink-light); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(232,0,125,0.4); }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: transparent; color: var(--white);
+    font-family: 'Unbounded', sans-serif; font-size: 12px;
+    font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 16px 32px; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.2);
+    text-decoration: none; cursor: pointer;
+    transition: all .25s;
+  }
+  .btn-ghost:hover { border-color: var(--pink); color: var(--pink); }
+  .hero-stats {
+    display: flex; gap: 48px; margin-top: 72px; padding-top: 48px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    animation: fadeUp .7s ease .4s both;
+    flex-wrap: wrap;
+  }
+  .stat-num {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 40px; font-weight: 900; color: var(--pink); line-height: 1;
+  }
+  .stat-label { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 6px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION BASE ─────────────────────────────── */
+  section { padding: 100px 48px; }
+  .section-label {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--pink);
+    margin-bottom: 16px;
+  }
+  h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 900; line-height: 1.1; letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .section-intro {
+    font-size: 17px; line-height: 1.7;
+    color: rgba(255,255,255,0.6); max-width: 600px;
+    margin-bottom: 64px;
+  }
+
+  /* ── ABOUT ────────────────────────────────────── */
+  .about { background: var(--gray-900); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: center;
+  }
+  .about-nums {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  }
+  .num-card {
+    background: var(--gray-800); padding: 32px;
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: border-color .25s;
+  }
+  .num-card:hover { border-color: rgba(232,0,125,0.4); }
+  .num-card:first-child { border-radius: 12px 0 0 0; }
+  .num-card:nth-child(2) { border-radius: 0 12px 0 0; }
+  .num-card:nth-child(3) { border-radius: 0 0 0 12px; }
+  .num-card:last-child { border-radius: 0 0 12px 0; }
+  .num-big {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 48px; font-weight: 900; color: var(--pink); line-height: 1;
+  }
+  .num-desc { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 8px; line-height: 1.4; }
+  .about-text p { font-size: 16px; line-height: 1.8; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+  .about-text strong { color: var(--white); }
+
+  /* ── HOW IT WORKS ─────────────────────────────── */
+  .how { background: var(--black); }
+  .flow-steps {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  .flow-step {
+    position: relative; padding: 32px 24px;
+    background: var(--gray-800); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px; transition: all .25s;
+  }
+  .flow-step:hover { border-color: var(--pink); transform: translateY(-4px); }
+  .flow-step::after {
+    content: '→';
+    position: absolute; right: -20px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px; color: var(--pink); font-weight: 700;
+  }
+  .flow-step:last-child::after { display: none; }
+  .step-num {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 11px; font-weight: 700; color: var(--pink);
+    letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+  .step-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 14px; font-weight: 700; line-height: 1.3; margin-bottom: 12px;
+  }
+  .step-desc { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.55); }
+
+  /* ── RISKS ────────────────────────────────────── */
+  .risks { background: var(--gray-900); }
+  .risks-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+  .risk-block {
+    padding: 40px; border-radius: 8px;
+    background: var(--gray-800); border: 1px solid rgba(255,255,255,0.06);
+  }
+  .risk-block.danger { border-color: rgba(232,0,125,0.3); background: rgba(232,0,125,0.05); }
+  .risk-label {
+    font-family: 'Unbounded', sans-serif; font-size: 10px;
+    font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .risk-label.red { color: var(--pink); }
+  .risk-label.gray { color: rgba(255,255,255,0.4); }
+  .risk-item { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start; }
+  .risk-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); flex-shrink: 0; margin-top: 7px; }
+  .risk-text { font-size: 15px; line-height: 1.5; color: rgba(255,255,255,0.8); }
+  .risk-highlight {
+    margin-top: 28px; padding: 20px 24px;
+    background: rgba(232,0,125,0.1); border: 1px solid rgba(232,0,125,0.25);
+    border-radius: 6px;
+    font-size: 15px; font-weight: 600; line-height: 1.5;
+  }
+
+  /* ── STAGES ───────────────────────────────────── */
+  .stages { background: var(--black); }
+  .stages-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 0;
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
+    overflow: hidden;
+  }
+  .stage-item {
+    padding: 28px 20px; border-right: 1px solid rgba(255,255,255,0.08);
+    background: var(--gray-800); transition: background .25s;
+  }
+  .stage-item:last-child { border-right: none; }
+  .stage-item:hover { background: rgba(232,0,125,0.07); }
+  .stage-n {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--pink); color: var(--white);
+    font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .stage-name { font-family: 'Unbounded', sans-serif; font-size: 11px; font-weight: 700; line-height: 1.3; margin-bottom: 10px; }
+  .stage-desc { font-size: 11px; line-height: 1.5; color: rgba(255,255,255,0.5); }
+
+  /* ── SOLUTIONS ────────────────────────────────── */
+  .solutions { background: var(--gray-900); }
+  .solutions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .sol-card {
+    background: var(--gray-800); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px; overflow: hidden; transition: all .25s;
+  }
+  .sol-card:hover { border-color: var(--pink); transform: translateY(-4px); box-shadow: 0 20px 48px rgba(232,0,125,0.15); }
+  .sol-top { background: var(--pink); padding: 24px; }
+  .sol-top.dark { background: var(--gray-700); }
+  .sol-icon { font-size: 32px; margin-bottom: 8px; }
+  .sol-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 14px; font-weight: 700; color: var(--white); line-height: 1.3;
+  }
+  .sol-body { padding: 24px; }
+  .sol-point { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+  .sol-point-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--pink); flex-shrink: 0; margin-top: 8px; }
+  .sol-point span { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.75); }
+
+  /* ── PRINT TYPES ──────────────────────────────── */
+  .printing { background: var(--black); }
+  .print-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  .print-card {
+    padding: 36px 28px; background: var(--gray-800);
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: all .25s; cursor: default;
+  }
+  .print-card:hover { background: rgba(232,0,125,0.07); border-color: rgba(232,0,125,0.3); }
+  .print-num {
+    font-family: 'Unbounded', sans-serif; font-size: 48px;
+    font-weight: 900; color: rgba(232,0,125,0.2); line-height: 1;
+    margin-bottom: 16px;
+  }
+  .print-name {
+    font-family: 'Unbounded', sans-serif; font-size: 14px;
+    font-weight: 700; color: var(--pink); margin-bottom: 16px;
+  }
+  .print-desc { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.6); }
+  .print-tag {
+    display: inline-block; margin-top: 16px;
+    background: rgba(232,0,125,0.1); border: 1px solid rgba(232,0,125,0.2);
+    color: rgba(232,0,125,0.9); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 100px;
+  }
+
+  /* ── AGGREGATION ──────────────────────────────── */
+  .aggregation { background: var(--gray-900); }
+  .agg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; align-items: stretch; }
+  .agg-card {
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;
+    overflow: hidden; transition: all .25s;
+    display: flex; flex-direction: column;
+  }
+  .agg-card:hover { border-color: var(--pink); transform: translateY(-4px); }
+  .agg-head {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--gray-700), var(--gray-800));
+    display: flex; align-items: center; gap: 12px;
+    flex-shrink: 0;
+  }
+  .agg-head.active { background: linear-gradient(135deg, var(--pink-dark), var(--pink)); }
+  .agg-num {
+    font-family: 'Unbounded', sans-serif; font-size: 28px;
+    font-weight: 900; color: rgba(255,255,255,0.2);
+  }
+  .agg-head.active .agg-num { color: rgba(255,255,255,0.4); }
+  .agg-name {
+    font-family: 'Unbounded', sans-serif; font-size: 13px;
+    font-weight: 700; color: var(--white); line-height: 1.2;
+  }
+  .agg-body {
+    padding: 20px 24px; background: var(--gray-800);
+    flex: 1; display: flex; flex-direction: column;
+  }
+  .agg-item { display: flex; gap: 8px; margin-bottom: 10px; align-items: flex-start; }
+  .agg-item span { font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.6); }
+  .plus-icon { color: var(--pink); font-weight: 700; font-size: 14px; line-height: 1.4; flex-shrink: 0; }
+  .minus-icon { color: rgba(255,100,100,0.8); font-weight: 700; font-size: 14px; line-height: 1.4; flex-shrink: 0; }
+
+  /* ── ARCHITECTURE ─────────────────────────────── */
+  .architecture { background: var(--black); }
+  .arch-layers {
+    display: flex; flex-direction: column; gap: 4px; max-width: 700px; margin: 0 auto;
+  }
+  .arch-layer {
+    display: flex; align-items: center; gap: 24px;
+    padding: 20px 28px; border-radius: 4px;
+    cursor: default;
+    /* opacity/transform управляются анимационным CSS ниже */
+  }
+  /* hover только когда анимация уже завершилась */
+  .arch-layers.visible .arch-layer:hover { transform: translateX(8px) !important; }
+  .arch-layer.l4 { background: var(--pink); }
+  .arch-layer.l3 { background: rgba(232,0,125,0.7); }
+  .arch-layer.l2 { background: rgba(232,0,125,0.4); }
+  .arch-layer.l1 { background: rgba(232,0,125,0.15); }
+  .arch-lnum {
+    font-family: 'Unbounded', sans-serif; font-size: 11px;
+    font-weight: 700; letter-spacing: 0.1em; opacity: 0.7; min-width: 20px;
+  }
+  .arch-lname {
+    font-family: 'Unbounded', sans-serif; font-size: 14px;
+    font-weight: 700;
+  }
+  .arch-ldesc {
+    font-size: 13px; color: rgba(255,255,255,0.7); margin-left: auto; text-align: right;
+  }
+
+  /* ── ADVANTAGES ───────────────────────────────── */
+  .advantages { background: var(--gray-900); }
+  .adv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .adv-card {
+    padding: 36px; background: var(--gray-800);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;
+    transition: all .25s;
+  }
+  .adv-card:hover { border-color: var(--pink); }
+  .adv-icon {
+    width: 48px; height: 48px; border-radius: 8px;
+    background: rgba(232,0,125,0.12); border: 1px solid rgba(232,0,125,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 20px;
+  }
+  .adv-title {
+    font-family: 'Unbounded', sans-serif; font-size: 14px;
+    font-weight: 700; margin-bottom: 12px; line-height: 1.3;
+    color: var(--pink);
+  }
+  .adv-desc { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.65); }
+
+  /* ── CASES ────────────────────────────────────── */
+  .cases { background: var(--black); }
+  .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .case-card {
+    background: var(--gray-800); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px; padding: 32px; transition: all .25s;
+  }
+  .case-card:hover { border-color: var(--pink); transform: translateY(-4px); }
+  .case-tag {
+    display: inline-block; background: var(--pink); color: var(--white);
+    font-family: 'Unbounded', sans-serif; font-size: 9px;
+    font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 4px; margin-bottom: 16px;
+  }
+  .case-title {
+    font-family: 'Unbounded', sans-serif; font-size: 15px;
+    font-weight: 700; line-height: 1.3; margin-bottom: 16px;
+  }
+  .case-desc { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.6); }
+  .case-result {
+    margin-top: 20px; padding: 16px;
+    background: rgba(232,0,125,0.07); border: 1px solid rgba(232,0,125,0.2);
+    border-radius: 6px;
+    font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.5;
+  }
+  .case-result strong { color: var(--pink); }
+
+  /* ── CTA ──────────────────────────────────────── */
+  .cta {
+    background: var(--gray-900);
+    text-align: center; padding: 120px 48px;
+    position: relative; overflow: hidden;
+  }
+  .cta-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(232,0,125,0.12) 0%, transparent 70%);
+  }
+  .cta-content { position: relative; z-index: 1; }
+  .cta h2 { margin-bottom: 20px; }
+  .cta p { font-size: 18px; color: rgba(255,255,255,0.6); max-width: 500px; margin: 0 auto 48px; line-height: 1.6; }
+  .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .contact-info { margin-top: 40px; font-size: 14px; color: rgba(255,255,255,0.4); }
+  .contact-info a { color: var(--pink); text-decoration: none; }
+
+  /* ── FOOTER ───────────────────────────────────── */
+  footer {
+    padding: 32px 48px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; color: rgba(255,255,255,0.4);
+  }
+  footer a { color: var(--pink); text-decoration: none; }
+
+  /* ── SCROLL REVEAL ────────────────────────────── */
+  .reveal {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+
+  /* ── HOW SECTION — двухколоночный layout с HUD ── */
+  .how-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 48px;
+    align-items: start;
+  }
+  .how-layout-left { /* текстовый контент */ }
+
+  /* ── HOW IT WORKS - ЧЕСТНЫЙ ЗНАК ─────────────── */
+  .hz-phases {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 48px;
+  }
+  .hz-phase {
+    padding: 28px 32px; background: var(--gray-800);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;
+  }
+  .hz-phase-active {
+    border-color: var(--pink); background: rgba(232,0,125,0.06);
+  }
+  .hz-phase-label {
+    font-family: 'Unbounded', sans-serif; font-size: 14px;
+    font-weight: 700; color: var(--pink); margin-bottom: 12px;
+  }
+  .hz-phase-desc { font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.7); }
+  .flow-subtitle {
+    font-family: 'Unbounded', sans-serif; font-size: 18px; font-weight: 700;
+    margin-bottom: 28px; color: var(--white);
+  }
+  .chain-flow {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    background: var(--gray-800); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px; overflow: hidden;
+  }
+  .chain-step {
+    padding: 28px 20px; text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    transition: background .2s;
+    position: relative;
+  }
+  .chain-step:hover { background: rgba(232,0,125,0.06); }
+  .chain-step:last-child { border-right: none; }
+  .chain-step:not(:last-child)::after {
+    content: '→';
+    position: absolute; right: -13px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--pink); font-size: 18px; font-weight: 700;
+    z-index: 2; pointer-events: none;
+  }
+  .chain-arrow { display: none; }
+  .chain-icon { font-size: 28px; margin-bottom: 12px; }
+  .chain-text { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.7); }
+
+  /* ── PRODUCTION PIPELINE ───────────────────────── */
+  .production { background: var(--gray-900); }
+  .prod-pipeline {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    background: var(--gray-800); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px; overflow: hidden;
+  }
+  .prod-step {
+    flex: 1; padding: 36px 24px; text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    transition: background .25s;
+    position: relative;
+  }
+  .prod-step:last-child { border-right: none; }
+  .prod-step:hover { background: rgba(232,0,125,0.07); }
+  .prod-step:not(:last-child)::after {
+    content: '→';
+    position: absolute; right: -14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--pink); font-size: 18px; font-weight: 900;
+    z-index: 2; pointer-events: none;
+  }
+  .prod-step-highlight { }
+  .prod-connector { display: none; }
+  .prod-icon { font-size: 36px; margin-bottom: 14px; }
+  .prod-step-name {
+    font-family: 'Unbounded', sans-serif; font-size: 13px;
+    font-weight: 700; color: var(--pink); margin-bottom: 10px;
+  }
+  .prod-step-desc { font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.6); }
+
+  /* ── VIDEO LINK ────────────────────────────────── */
+  .video-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 16px; padding: 8px 14px;
+    background: rgba(232,0,125,0.1); border: 1px solid rgba(232,0,125,0.25);
+    border-radius: 4px; color: var(--pink); text-decoration: none;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+    transition: all .2s;
+  }
+  .video-link:hover { background: var(--pink); color: var(--white); }
+
+  /* ── CONTACTS ──────────────────────────────────── */
+  .contacts-section { background: var(--gray-900); }
+  .contacts-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+    border-radius: 8px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .contact-card {
+    padding: 36px 40px; background: var(--gray-800);
+    text-decoration: none; transition: background .25s;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .contact-card:last-child { border-right: none; }
+  .contact-card:hover { background: rgba(232,0,125,0.07); }
+  .contact-type {
+    font-family: 'Unbounded', sans-serif; font-size: 10px;
+    font-weight: 700; letter-spacing: 0.2em; color: rgba(255,255,255,0.4);
+    margin-bottom: 12px;
+  }
+  .contact-value {
+    font-family: 'Unbounded', sans-serif; font-size: 18px;
+    font-weight: 700; color: var(--white); line-height: 1.2;
+    transition: color .2s;
+  }
+  .contact-card:hover .contact-value { color: var(--pink); }
+
+  @media (max-width: 1024px) {
+    .hz-phases { grid-template-columns: 1fr; }
+    .chain-flow { grid-template-columns: 1fr; }
+    .chain-step { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .chain-step:not(:last-child)::after { content: '↓'; right: auto; top: auto; bottom: -14px; left: 50%; transform: translateX(-50%); }
+    .prod-pipeline { flex-direction: column; }
+    .prod-connector { transform: rotate(90deg); padding: 4px 0; }
+    .prod-step { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .contacts-grid { grid-template-columns: 1fr; }
+    .contact-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  }
+
+
+  @media (max-width: 1024px) {
+    nav { padding: 16px 24px; }
+    nav ul { display: none; }
+    section { padding: 80px 24px; }
+    .hero { padding: 120px 24px 60px; }
+    .about-grid, .risks-layout { grid-template-columns: 1fr; gap: 40px; }
+    .flow-steps { grid-template-columns: repeat(2, 1fr); }
+    .flow-step::after { display: none; }
+    .stages-grid { grid-template-columns: repeat(3, 1fr); }
+    .solutions-grid, .agg-grid, .print-grid { grid-template-columns: repeat(2, 1fr); }
+    .adv-grid, .cases-grid { grid-template-columns: repeat(2, 1fr); }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+  @media (max-width: 640px) {
+    .hero-stats { gap: 28px; }
+    .stat-num { font-size: 32px; }
+    .solutions-grid, .agg-grid, .print-grid, .adv-grid, .cases-grid { grid-template-columns: 1fr; }
+    .stages-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── APPLICATION TYPES (Типы нанесения) ────────── */
+  .apptypes { background: var(--gray-900); }
+  .apptypes-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;
+  }
+  .apptype-col {
+    padding: 0;
+  }
+  .apptype-header {
+    padding: 20px 32px;
+    background: linear-gradient(135deg, var(--pink-dark), var(--pink));
+    font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 700;
+    color: var(--white); text-align: center;
+  }
+  .apptype-body { padding: 28px 32px; background: var(--gray-800); height: 100%; }
+  .apptype-col:first-child .apptype-body { border-right: 1px solid rgba(255,255,255,0.06); }
+  .apptype-points { list-style: none; margin-bottom: 24px; }
+  .apptype-points li {
+    padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 14px; line-height: 1.5; color: rgba(255,255,255,0.8);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .apptype-points li::before { content: '—'; color: var(--pink); flex-shrink: 0; font-weight: 700; }
+  .apptype-points li:last-child { border-bottom: none; }
+  .apptype-equip-title {
+    font-family: 'Unbounded', sans-serif; font-size: 12px; font-weight: 700;
+    color: rgba(255,255,255,0.5); letter-spacing: 0.1em;
+    margin-bottom: 12px; margin-top: 8px;
+  }
+  .apptype-equip { list-style: none; }
+  .apptype-equip li {
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px; color: rgba(255,255,255,0.7);
+    display: flex; gap: 10px; align-items: center;
+  }
+  .apptype-equip li::before { content: '•'; color: var(--pink); font-size: 16px; flex-shrink: 0; }
+  .apptype-equip li:last-child { border-bottom: none; }
+  .apptype-video {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 20px; padding: 8px 14px;
+    background: rgba(232,0,125,0.1); border: 1px solid rgba(232,0,125,0.25);
+    border-radius: 4px; color: var(--pink); text-decoration: none;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.04em; transition: all .2s;
+  }
+  .apptype-video:hover { background: var(--pink); color: var(--white); }
+
+  /* ── SERIALIZATION ──────────────────────────────── */
+  .serialization { background: var(--black); }
+  .serial-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .serial-card {
+    padding: 32px 28px; background: var(--gray-800);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 8px;
+    transition: all .25s;
+  }
+  .serial-card:hover { border-color: var(--pink); transform: translateY(-4px); }
+  .serial-num {
+    font-family: 'Unbounded', sans-serif; font-size: 36px;
+    font-weight: 900; color: rgba(232,0,125,0.15); margin-bottom: 16px;
+    line-height: 1;
+  }
+  .serial-title {
+    font-family: 'Unbounded', sans-serif; font-size: 14px;
+    font-weight: 700; color: var(--pink); margin-bottom: 12px;
+  }
+  .serial-desc { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.65); }
+  .serial-steps { margin-top: 16px; }
+  .serial-step {
+    display: flex; gap: 10px; padding: 8px 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.5;
+  }
+  .serial-step-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--pink);
+    flex-shrink: 0; margin-top: 6px;
+  }
+
+  /* ── CASE DETAIL (with photos) ─────────────────── */
+  .case-detail { background: var(--gray-900); }
+  .case-detail-layout {
+    display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; align-items: start;
+  }
+  .case-detail-left {}
+  .case-detail-tag {
+    display: inline-block;
+    font-family: 'Unbounded', sans-serif; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--pink);
+    border: 1px solid rgba(232,0,125,0.4); border-radius: 4px;
+    padding: 4px 10px; margin-bottom: 20px;
+  }
+  .case-detail-title {
+    font-family: 'Unbounded', sans-serif; font-size: 22px;
+    font-weight: 700; line-height: 1.25; margin-bottom: 28px; color: var(--white);
+  }
+  .case-detail-block { margin-bottom: 24px; }
+  .case-detail-block-title {
+    font-family: 'Unbounded', sans-serif; font-size: 12px;
+    font-weight: 700; color: var(--pink); margin-bottom: 10px;
+    letter-spacing: 0.05em;
+  }
+  .case-detail-points { list-style: none; }
+  .case-detail-points li {
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.75);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .case-detail-points li:last-child { border-bottom: none; }
+  .case-detail-points li::before { content: '→'; color: var(--pink); flex-shrink: 0; font-weight: 700; }
+  .case-detail-result {
+    margin-top: 20px; padding: 16px 20px;
+    background: rgba(232,0,125,0.08); border: 1px solid rgba(232,0,125,0.2);
+    border-radius: 6px; font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.8);
+  }
+  .case-photos-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .case-photo {
+    border-radius: 8px; overflow: hidden; aspect-ratio: 4/3;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .case-photo img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .4s ease;
+  }
+  .case-photo:hover img { transform: scale(1.04); }
+
+  @media (max-width: 900px) {
+    .apptypes-grid { grid-template-columns: 1fr; }
+    .serial-grid { grid-template-columns: 1fr; }
+    .case-detail-layout { grid-template-columns: 1fr; }
+    .case-photos-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Case 2 — 3 фото: 1 широкое + 2 внизу */
+  .case-photos-grid--3 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+  .case-photo--wide {
+    grid-column: 1 / -1;
+    aspect-ratio: 16/9;
+  }
+
+  /* ── CLIENTS WORDCLOUD ──────────────────────────────── */
+  .clients { background: var(--black); overflow: hidden; }
+  .wordcloud {
+    display: flex; flex-wrap: wrap; align-items: center;
+    justify-content: center; gap: 12px 20px;
+    padding: 8px 0;
+  }
+  .wc-word {
+    font-family: 'Unbounded', sans-serif; font-weight: 700;
+    color: rgba(255,255,255,0.15);
+    line-height: 1.1; transition: color .3s, transform .3s;
+    cursor: default; white-space: nowrap;
+  }
+  .wc-word:hover { color: var(--pink); transform: scale(1.08); }
+  .wc-xl  { font-size: clamp(36px, 5vw, 64px); }
+  .wc-lg  { font-size: clamp(24px, 3.5vw, 44px); }
+  .wc-md  { font-size: clamp(18px, 2.5vw, 32px); }
+  .wc-sm  { font-size: clamp(14px, 2vw, 22px); }
+  .wc-pink { color: rgba(232,0,125,0.35); }
+
+  /* ══════════════════════════════════════════
+     АПГРЕЙД АНИМАЦИЙ v2
+     Добавлено: text reveal, counters, shimmer, 
+     magnetic buttons, scan line, glow pulse
+  ══════════════════════════════════════════ */
+
+  /* SVG иконки — убираем старый font-size для chain-icon */
+  .chain-icon svg { display: block; margin: 0 auto 12px; }
+  .prod-icon svg { display: block; margin: 0 auto 14px; }
+  .sol-icon svg { display: block; margin-bottom: 8px; }
+  .adv-icon svg { display: block; }
+  .adv-icon { display: flex; align-items: center; justify-content: center; }
+  .risk-highlight svg { flex-shrink: 0; }
+
+  /* ── HERO TEXT REVEAL (Split Text Effect) ─── */
+  /* Паттерн: Staggered Line Reveal через clip-path */
+  /* hero-line-wrap: каждая строка h1 как отдельный overflow-контейнер */
+  /* Без <br> — display:block на самом span даёт перенос строки */
+  .hero-h1-split { line-height: 1.05; }
+  .hero-line-wrap {
+    overflow: hidden;
+    display: block;    /* блочный — даёт перенос без <br> */
+    line-height: 1.05; /* критично: без этого появляется gap снизу */
+  }
+  .hero-line-inner {
+    display: block;
+    transform: translateY(105%);
+    opacity: 0;
+    animation: lineReveal 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .hero-line-inner.l1 { animation-delay: 0.05s; }
+  .hero-line-inner.l2 { animation-delay: 0.18s; }
+  .hero-line-inner.l3 { animation-delay: 0.31s; }
+
+  @keyframes lineReveal {
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* ── COUNTER ANIMATION ─────────────────── */
+  /* Паттерн: Odometer / Number Roll */
+  .stat-num, .num-big {
+    transition: color 0.3s;
+  }
+  .stat-num.counting, .num-big.counting {
+    color: var(--pink-light);
+  }
+
+  /* ── SHIMMER EFFECT на картах ──────────── */
+  /* Паттерн: Specular Highlight Sweep */
+  .sol-card, .adv-card, .print-card, .agg-card, .serial-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .sol-card::before, .adv-card::before, .print-card::before,
+  .agg-card::before, .serial-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(232, 0, 125, 0.06) 50%,
+      transparent 100%
+    );
+    transform: skewX(-15deg);
+    transition: none;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .sol-card:hover::before, .adv-card:hover::before,
+  .print-card:hover::before, .agg-card:hover::before,
+  .serial-card:hover::before {
+    animation: shimmerSweep 0.6s ease forwards;
+  }
+  @keyframes shimmerSweep {
+    to { left: 140%; }
+  }
+
+  /* ── SCAN LINE на героe ────────────────── */
+  /* Паттерн: Industrial HUD Scan — отсылка к DataMatrix сканерам */
+  /* scan line удалён — слишком отвлекает от текста */
+
+  /* ── GLOW PULSE на статистике ──────────── */
+  /* Паттерн: Data Highlight — акцент на ключевые метрики */
+  .hero-stats { position: relative; }
+  .stat-num {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* ── FLOW STEP CONNECTOR ANIMATION ────── */
+  /* Паттерн: Pipeline Flow — анимация потока данных */
+  .flow-step::after {
+    animation: arrowPulse 2s ease-in-out infinite;
+  }
+  @keyframes arrowPulse {
+    0%, 100% { opacity: 0.4; transform: translateY(-50%) translateX(0); }
+    50% { opacity: 1; transform: translateY(-50%) translateX(3px); }
+  }
+
+  /* ── CHAIN STEP CONNECTOR ──────────────── */
+  .chain-step:not(:last-child)::after {
+    animation: arrowPulse 1.8s ease-in-out infinite;
+  }
+  .chain-step:nth-child(2)::after { animation-delay: 0.3s; }
+  .chain-step:nth-child(3)::after { animation-delay: 0.6s; }
+
+  /* ── PROD STEP CONNECTOR ───────────────── */
+  .prod-step:not(:last-child)::after {
+    animation: arrowPulse 2s ease-in-out infinite;
+  }
+  .prod-step:nth-child(2)::after { animation-delay: 0.4s; }
+  .prod-step:nth-child(3)::after { animation-delay: 0.8s; }
+  .prod-step:nth-child(4)::after { animation-delay: 1.2s; }
+
+  /* ── ARCHITECTURE LAYER REVEAL ─────────── */
+  /* Паттерн: Pyramid Cascade — слои въезжают снизу вверх */
+  .arch-layer {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  /* Анимация через keyframes — надёжнее чем transition+delay */
+  @keyframes archLayerIn {
+    from { opacity: 0; transform: translateX(-32px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  /* L4 (верхний/первый в DOM) — появляется последним */
+  .arch-layers.visible .arch-layer:nth-child(1) {
+    animation: archLayerIn 0.6s cubic-bezier(0.16,1,0.3,1) 0.55s both;
+  }
+  .arch-layers.visible .arch-layer:nth-child(2) {
+    animation: archLayerIn 0.6s cubic-bezier(0.16,1,0.3,1) 0.35s both;
+  }
+  .arch-layers.visible .arch-layer:nth-child(3) {
+    animation: archLayerIn 0.6s cubic-bezier(0.16,1,0.3,1) 0.18s both;
+  }
+  .arch-layers.visible .arch-layer:nth-child(4) {
+    animation: archLayerIn 0.6s cubic-bezier(0.16,1,0.3,1) 0.05s both;
+  }
+
+  /* ── WORDCLOUD FLOAT ───────────────────── */
+  /* Паттерн: Organic Float — клиенты "дышат" */
+  .wc-word {
+    animation: wordFloat 6s ease-in-out infinite;
+  }
+  .wc-word:nth-child(2n) { animation-delay: -2s; }
+  .wc-word:nth-child(3n) { animation-delay: -4s; }
+  .wc-word:nth-child(5n) { animation-delay: -1s; }
+  .wc-word:nth-child(7n) { animation-delay: -3s; }
+  @keyframes wordFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  .wc-word:hover {
+    animation: none;
+    transform: scale(1.08) !important;
+  }
+
+  /* ── BADGE PULSE RING ──────────────────── */
+  /* Паттерн: Active Status Indicator */
+  .hero-badge {
+    position: relative;
+  }
+  .hero-badge::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 100px;
+    border: 1px solid rgba(232,0,125,0.2);
+    animation: badgeRing 3s ease-in-out infinite;
+  }
+  @keyframes badgeRing {
+    0%, 100% { opacity: 0; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.03); }
+  }
+
+  /* ── CONTACT CARD HOVER ────────────────── */
+  /* Паттерн: Border Trace — неоновый обвод по кругу */
+  .contact-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(232,0,125,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .contact-card:hover::before {
+    transform: translateX(100%);
+  }
+
+  /* ── STAT ITEM HOVER GLOW ──────────────── */
+  .hero-stats > div {
+    transition: transform 0.2s ease;
+    padding: 8px 0;
+  }
+  .hero-stats > div:hover { transform: translateY(-2px); }
+  .hero-stats > div:hover .stat-num {
+    text-shadow: 0 0 20px rgba(232,0,125,0.5);
+  }
+
+  /* ── NAV LINK UNDERLINE ANIMATION ─────── */
+  /* Паттерн: Magnetic Underline */
+  nav a {
+    position: relative;
+  }
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0;
+    width: 0; height: 1px;
+    background: var(--pink);
+    transition: width 0.25s ease;
+  }
+  nav a:hover::after, nav a.active::after { width: 100%; }
+
+  /* ── SECTION LABEL ANIMATION ───────────── */
+  /* Паттерн: Typewriter Tick */
+  .section-label {
+    position: relative;
+    display: inline-block;
+  }
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 16px; height: 1px;
+    background: var(--pink);
+    margin-right: 8px;
+    vertical-align: middle;
+    transform-origin: left;
+    animation: labelLine 0.5s ease forwards;
+  }
+  @keyframes labelLine {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  /* ── VIDEO LINK ICON ───────────────────── */
+  .video-link svg { transition: transform 0.2s ease; }
+  .video-link:hover svg { transform: scale(1.2); }
+
+  /* ── CTA BACKGROUND PULSE ──────────────── */
+  .cta-bg {
+    animation: ctaPulse 6s ease-in-out infinite;
+  }
+  @keyframes ctaPulse {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+
+  /* ── HERO GRID PARALLAX CONTAINER ─────── */
+  .hero-grid {
+    transition: transform 0.1s linear;
+    will-change: transform;
+  }
+
+  /* ── STAGGER REVEAL для дочерних элементов ── */
+  /* Паттерн: Cascade Reveal — карточки входят по очереди */
+  .reveal.visible .flow-step,
+  .reveal.visible .sol-card,
+  .reveal.visible .adv-card,
+  .reveal.visible .print-card,
+  .reveal.visible .agg-card,
+  .reveal.visible .serial-card,
+  .reveal.visible .num-card,
+  .reveal.visible .stage-item {
+    animation: staggerIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .reveal.visible .flow-step:nth-child(1),
+  .reveal.visible .sol-card:nth-child(1),
+  .reveal.visible .adv-card:nth-child(1),
+  .reveal.visible .print-card:nth-child(1),
+  .reveal.visible .agg-card:nth-child(1),
+  .reveal.visible .serial-card:nth-child(1),
+  .reveal.visible .num-card:nth-child(1),
+  .reveal.visible .stage-item:nth-child(1) { animation-delay: 0.05s; }
+  .reveal.visible .flow-step:nth-child(2),
+  .reveal.visible .sol-card:nth-child(2),
+  .reveal.visible .adv-card:nth-child(2),
+  .reveal.visible .print-card:nth-child(2),
+  .reveal.visible .agg-card:nth-child(2),
+  .reveal.visible .serial-card:nth-child(2),
+  .reveal.visible .num-card:nth-child(2),
+  .reveal.visible .stage-item:nth-child(2) { animation-delay: 0.12s; }
+  .reveal.visible .flow-step:nth-child(3),
+  .reveal.visible .sol-card:nth-child(3),
+  .reveal.visible .adv-card:nth-child(3),
+  .reveal.visible .print-card:nth-child(3),
+  .reveal.visible .agg-card:nth-child(3),
+  .reveal.visible .serial-card:nth-child(3),
+  .reveal.visible .num-card:nth-child(3),
+  .reveal.visible .stage-item:nth-child(3) { animation-delay: 0.19s; }
+  .reveal.visible .flow-step:nth-child(4),
+  .reveal.visible .sol-card:nth-child(4) { animation-delay: 0.26s; }
+  .reveal.visible .num-card:nth-child(4) { animation-delay: 0.26s; }
+  .reveal.visible .adv-card:nth-child(4) { animation-delay: 0.26s; }
+  .reveal.visible .adv-card:nth-child(5) { animation-delay: 0.33s; }
+  .reveal.visible .adv-card:nth-child(6) { animation-delay: 0.40s; }
+
+  @keyframes staggerIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Отключаем двойную анимацию — reveal применяет к родителю, stagger к детям */
+  .reveal.visible .flow-step,
+  .reveal.visible .sol-card,
+  .reveal.visible .adv-card,
+  .reveal.visible .print-card,
+  .reveal.visible .agg-card,
+  .reveal.visible .serial-card,
+  .reveal.visible .num-card,
+  .reveal.visible .stage-item {
+    will-change: transform, opacity;
+  }
+
+
+  /* ══════════════════════════════════════════════════
+     HUD PANEL — System Monitor в правой части Hero
+     Паттерн: Split Hero / Command Center
+     Встречается: Vercel, Linear, Stripe Terminal
+  ══════════════════════════════════════════════════ */
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Hero — стандартный flex (HUD перемещён в секцию .how) */
+  .hero {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    padding: 88px 48px 60px !important; /* nav=64px + 24px воздух */
+    min-height: 100vh;
+  }
+  .hero-content {
+    position: relative; z-index: 1;
+    max-width: 900px;
+  }
+
+  /* ── HUD MONITOR — standalone блок в секции .how ── */
+  .hero-monitor {
+    position: relative; z-index: 2;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    background: rgba(17,17,17,0.95);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    /* Высота ограничена чтобы не занимал весь экран */
+    max-height: 520px;
+  }
+
+  /* Заголовок панели — macOS-style dots */
+  .monitor-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .monitor-title {
+    font-family: var(--font-mono);
+    font-size: 10px; color: rgba(255,255,255,0.35);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .monitor-dots { display: flex; gap: 5px; }
+  .monitor-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+  }
+  .monitor-dot:nth-child(1) { background: #FF5F57; }
+  .monitor-dot:nth-child(2) { background: #FEBC2E; }
+  .monitor-dot:nth-child(3) { background: #28C840; }
+
+  /* Тело панели */
+  .monitor-body {
+    flex: 1; padding: 20px;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .monitor-body::-webkit-scrollbar { display: none; }
+
+  /* ── ТЕРМИНАЛЬНЫЙ ЛОГ ─────────────────────── */
+  .terminal-log { margin-bottom: 20px; }
+  .log-line {
+    display: flex; gap: 8px; margin-bottom: 5px;
+    font-family: var(--font-mono); font-size: 10px;
+    line-height: 1.5; opacity: 0;
+    animation: logAppear .25s ease forwards;
+  }
+  .log-line:nth-child(1) { animation-delay: .6s; }
+  .log-line:nth-child(2) { animation-delay: .85s; }
+  .log-line:nth-child(3) { animation-delay: 1.1s; }
+  .log-line:nth-child(4) { animation-delay: 1.35s; }
+  .log-line:nth-child(5) { animation-delay: 1.6s; }
+  .log-line:nth-child(6) { animation-delay: 1.85s; }
+  .log-line:nth-child(7) { animation-delay: 2.1s; }
+  .log-line:nth-child(8) { animation-delay: 2.35s; }
+  @keyframes logAppear {
+    from { opacity: 0; transform: translateX(-6px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .log-time { color: rgba(255,255,255,0.25); flex-shrink: 0; }
+  .log-ok   { color: #00E676; flex-shrink: 0; }
+  .log-warn { color: #FEBC2E; flex-shrink: 0; }
+  .log-info { color: #64B5F6; flex-shrink: 0; }
+  .log-msg  { color: rgba(255,255,255,0.6); }
+
+  /* ── DATAMATRIX ВИЗУАЛ ────────────────────── */
+  .dm-visual {
+    margin: 16px 0;
+    padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.02);
+    display: flex; align-items: center; gap: 16px;
+    opacity: 0;
+    animation: fadeUp .5s ease 2.6s both;
+  }
+  .dm-code {
+    width: 64px; height: 64px; flex-shrink: 0;
+    display: grid; grid-template-columns: repeat(8, 1fr); gap: 1.5px;
+  }
+  .dm-cell {
+    border-radius: 1px;
+    background: var(--white);
+  }
+  .dm-cell.empty { background: transparent; }
+  @keyframes dmFlicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  .dm-info { flex: 1; min-width: 0; }
+  .dm-label {
+    font-family: var(--font-mono); font-size: 8px;
+    color: var(--pink); letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 5px;
+  }
+  .dm-code-text {
+    font-family: var(--font-mono); font-size: 8px;
+    color: rgba(255,255,255,0.3); word-break: break-all;
+    line-height: 1.5;
+  }
+
+  /* Scan-line поверх DM кода */
+  .dm-code { position: relative; overflow: hidden; }
+  .dm-code::after {
+    content: '';
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,230,118,0.8), transparent);
+    animation: dmScan 2s ease-in-out infinite;
+    animation-delay: 3s;
+  }
+  @keyframes dmScan {
+    0% { top: 0; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* ── ПРОГРЕСС-БАРЫ ЛИНИЙ ──────────────────── */
+  .prod-lines {
+    margin-top: 16px;
+    opacity: 0;
+    animation: fadeUp .5s ease 2.9s both;
+  }
+  .prod-line-item { margin-bottom: 12px; }
+  .prod-line-header {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 9px;
+    color: rgba(255,255,255,0.35); margin-bottom: 5px;
+  }
+  .prod-line-val { color: rgba(255,255,255,0.7); }
+  .prod-line-bar {
+    height: 1px; background: rgba(255,255,255,0.08);
+    position: relative; overflow: hidden;
+  }
+  .prod-line-fill {
+    height: 100%; background: var(--pink);
+    animation: fillBar 1.8s cubic-bezier(0.16,1,0.3,1) forwards;
+    transform-origin: left; transform: scaleX(0);
+  }
+  @keyframes fillBar { to { transform: scaleX(1); } }
+  .prod-line-item:nth-child(1) .prod-line-fill { animation-delay: 2.8s; }
+  .prod-line-item:nth-child(2) .prod-line-fill { animation-delay: 3.0s; }
+  .prod-line-item:nth-child(3) .prod-line-fill { animation-delay: 3.2s; }
+
+  /* ── MOBILE: панель скрывается ────────────── */
+  @media (max-width: 1024px) {
+    .how-layout { grid-template-columns: 1fr !important; }
+    .hero-monitor { max-height: none; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">первый<span>бит</span></div>
+  <ul>
+    <li><a href="#about">О компании</a></li>
+    <li><a href="#how">Как работает</a></li>
+    <li><a href="#production">Производство</a></li>
+    <li><a href="#solutions">Решения</a></li>
+    <li><a href="#apptypes">Нанесение</a></li>
+    <li><a href="#case1">Кейсы</a></li>
+    <li><a href="#advantages">Преимущества</a></li>
+    <li><a href="#contacts">Контакты</a></li>
+  </ul>
+  <a href="#contacts" class="btn-primary" style="padding:10px 20px;font-size:11px">Связаться</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Честный Знак · Промышленная маркировка</div>
+    <h1 class="hero-h1-split">
+  <span class="hero-line-wrap"><span class="hero-line-inner l1">Промышленная</span></span>
+  <span class="hero-line-wrap"><span class="hero-line-inner l2">маркировка</span></span>
+  <span class="hero-line-wrap"><span class="hero-line-inner l3">с <em>Первым Битом</em></span></span>
+</h1>
+    <p class="hero-sub">Комплексное внедрение маркировки на производстве — от заказа кодов и нанесения до складской логистики и отправки УПД по ЭДО.</p>
+    <div class="hero-cta">
+      <a href="#solutions" class="btn-primary">Посмотреть решения →</a>
+      <a href="#cta" class="btn-ghost">Получить консультацию</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">600+</div>
+        <div class="stat-label">производственных линий</div>
+      </div>
+      <div>
+        <div class="stat-num">1200+</div>
+        <div class="stat-label">станций сериализации</div>
+      </div>
+      <div>
+        <div class="stat-num">4 млн</div>
+        <div class="stat-label">кодов в месяц</div>
+      </div>
+      <div>
+        <div class="stat-num">28+</div>
+        <div class="stat-label">лет на рынке IT</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ABOUT -->
+<section class="about reveal" id="about">
+  <div class="section-label">О компании</div>
+  <div class="about-grid">
+    <div class="about-text">
+      <h2>Первый Бит — лидер автоматизации производства</h2>
+      <p>Наши клиенты — крупные корпоративные заказчики и представители среднего бизнеса из различных отраслей. За 28 лет мы <strong>успешно реализовали тысячи проектов</strong> для российских и международных компаний, в том числе имеющих территориально-распределённую структуру.</p>
+      <p><strong>Индивидуальная проработка</strong> при формировании технического решения и <strong>мультиязычная команда</strong> из более 9 500 специалистов — от Руководителей проектов до Разработчиков.</p>
+      <a href="#cta" class="btn-primary" style="margin-top:8px">Узнать больше →</a>
+    </div>
+    <div class="about-nums">
+      <div class="num-card">
+        <div class="num-big">28+</div>
+        <div class="num-desc">лет на рынке IT</div>
+      </div>
+      <div class="num-card">
+        <div class="num-big">70+</div>
+        <div class="num-desc">вендоров IT-решений и оборудования</div>
+      </div>
+      <div class="num-card">
+        <div class="num-big">9 500+</div>
+        <div class="num-desc">сотрудников</div>
+      </div>
+      <div class="num-card">
+        <div class="num-big">300К+</div>
+        <div class="num-desc">постоянных клиентов</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how reveal" id="how">
+  <div class="how-layout">
+    <div class="how-layout-left">
+      <div class="section-label">Система Честный ЗНАК</div>
+      <h2>Маркировка в системе<br>Честный ЗНАК</h2>
+      <p class="section-intro"><strong style="color:var(--white)">Код маркировки</strong> — обязательный уникальный цифровой код DataMatrix, который наносится на товары и позволяет отслеживать их путь от производителя до конечного потребителя.</p>
+
+      <div class="hz-phases">
+    <div class="hz-phase">
+      <div class="hz-phase-label">В пилоте</div>
+      <div class="hz-phase-desc">Участие необязательное. Время для настройки оборудования, ЦРПТ выдаёт коды бесплатно.</div>
+    </div>
+    <div class="hz-phase hz-phase-active">
+      <div class="hz-phase-label">Обязательная</div>
+      <div class="hz-phase-desc">Настройка товароучётной системы, маркировка остатков и новых партий товара. Итог — запрет продажи немаркированных товаров.</div>
+    </div>
+  </div>
+
+      <h3 class="flow-subtitle">Как работает маркировка</h3>
+      <div class="chain-flow">
+    <div class="chain-step">
+      <div class="chain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="18" width="28" height="12" rx="1" stroke="#E8007D" stroke-width="1.5"/><rect x="6" y="12" width="8" height="6" stroke="#E8007D" stroke-width="1.5"/><rect x="18" y="12" width="8" height="6" stroke="#E8007D" stroke-width="1.5"/><path d="M2 18L8 12" stroke="#E8007D" stroke-width="1.5"/><path d="M12 18V12M20 18V12" stroke="#E8007D" stroke-width="1.5"/><path d="M30 18L26 12" stroke="#E8007D" stroke-width="1.5"/><rect x="13" y="22" width="6" height="8" stroke="#E8007D" stroke-width="1.5"/></svg></div>
+      <div class="chain-text">Производитель / импортёр наносит код на каждую единицу товара</div>
+    </div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-step">
+      <div class="chain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="10" width="18" height="14" rx="1" stroke="#E8007D" stroke-width="1.5"/><path d="M20 14H26L30 20V24H20V14Z" stroke="#E8007D" stroke-width="1.5" stroke-linejoin="round"/><circle cx="8" cy="26" r="2.5" stroke="#E8007D" stroke-width="1.5"/><circle cx="24" cy="26" r="2.5" stroke="#E8007D" stroke-width="1.5"/><path d="M2 20H18" stroke="#E8007D" stroke-width="1.5"/></svg></div>
+      <div class="chain-text">Путь товара фиксируется на каждом этапе передачи</div>
+    </div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-step">
+      <div class="chain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 14V28H28V14" stroke="#E8007D" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 8H30L28 14H4L2 8Z" stroke="#E8007D" stroke-width="1.5" stroke-linejoin="round"/><rect x="12" y="18" width="8" height="10" stroke="#E8007D" stroke-width="1.5"/><path d="M6 4H26" stroke="#E8007D" stroke-width="1.5"/></svg></div>
+      <div class="chain-text">В магазине сканируют код товара и размещают его на полке</div>
+    </div>
+    <div class="chain-arrow">→</div>
+    <div class="chain-step">
+      <div class="chain-icon"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 4H6L10 22H26L30 10H8" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13" cy="27" r="2" stroke="#E8007D" stroke-width="1.5"/><circle cx="23" cy="27" r="2" stroke="#E8007D" stroke-width="1.5"/></svg></div>
+      <div class="chain-text">Товар продают на кассе, после чего «код выходит из оборота»</div>
+    </div>
+      </div><!-- /chain-flow -->
+    </div><!-- /how-layout-left -->
+
+    <!-- HUD Monitor Panel — паттерн Command Center -->
+    <div class="hero-monitor">
+      <div class="monitor-header">
+        <div class="monitor-title">БИТ.Маркировка / v4.2.1</div>
+        <div class="monitor-dots">
+          <div class="monitor-dot"></div>
+          <div class="monitor-dot"></div>
+          <div class="monitor-dot"></div>
+        </div>
+      </div>
+
+      <div class="monitor-body">
+        <!-- Терминальный лог -->
+        <div class="terminal-log">
+          <div class="log-line">
+            <span class="log-time">09:14:32</span>
+            <span class="log-ok">[OK]</span>
+            <span class="log-msg">Подключение к ГИС МТ — активно</span>
+          </div>
+          <div class="log-line">
+            <span class="log-time">09:14:33</span>
+            <span class="log-ok">[OK]</span>
+            <span class="log-msg">Сессия СУЗ инициализирована</span>
+          </div>
+          <div class="log-line">
+            <span class="log-time">09:14:35</span>
+            <span class="log-info">[INF]</span>
+            <span class="log-msg">Загрузка кодов: 4 800 шт</span>
+          </div>
+          <div class="log-line">
+            <span class="log-time">09:14:37</span>
+            <span class="log-ok">[OK]</span>
+            <span class="log-msg">Принтер Zebra ZT420 — online</span>
+          </div>
+          <div class="log-line">
+            <span class="log-time">09:14:40</span>
+            <span class="log-ok">[OK]</span>
+            <span class="log-msg">Сканер Datalogic — откалиброван</span>
+          </div>
+          <div class="log-line">
+            <span class="log-time">09:14:44</span>
+            <span class="log-ok">[OK]</span>
+            <span class="log-msg">1С:УТ подключена, синхронизация</span>
+          </div>
+          <div class="log-line">
+            <span class="log-time">09:14:48</span>
+            <span class="log-warn">[WRN]</span>
+            <span class="log-msg">Буфер кодов &lt; 500 шт — пополнить</span>
+          </div>
+          <div class="log-line">
+            <span class="log-time">09:14:50</span>
+            <span class="log-ok">[OK]</span>
+            <span class="log-msg">Линия 3 — запуск маркировки</span>
+          </div>
+        </div>
+
+        <!-- DataMatrix код -->
+        <div class="dm-visual">
+          <div class="dm-code" id="dmCode"></div>
+          <div class="dm-info">
+            <div class="dm-label">DataMatrix код</div>
+            <div class="dm-code-text">0104600074926&shy;4002181YF1G&shy;QOM91EE06</div>
+          </div>
+        </div>
+
+        <!-- Прогресс производственных линий -->
+        <div class="prod-lines">
+          <div class="prod-line-item">
+            <div class="prod-line-header">
+              <span>Линия 1 — Термотранс.</span>
+              <span class="prod-line-val">94%</span>
+            </div>
+            <div class="prod-line-bar">
+              <div class="prod-line-fill" style="width:94%"></div>
+            </div>
+          </div>
+          <div class="prod-line-item">
+            <div class="prod-line-header">
+              <span>Линия 2 — Пьезоструйная</span>
+              <span class="prod-line-val">78%</span>
+            </div>
+            <div class="prod-line-bar">
+              <div class="prod-line-fill" style="width:78%"></div>
+            </div>
+          </div>
+          <div class="prod-line-item">
+            <div class="prod-line-header">
+              <span>Линия 3 — Лазерная</span>
+              <span class="prod-line-val">88%</span>
+            </div>
+            <div class="prod-line-bar">
+              <div class="prod-line-fill" style="width:88%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /hero-monitor -->
+
+  </div><!-- /how-layout -->
+</section>
+
+<!-- RISKS -->
+<section class="risks reveal">
+  <div class="section-label">Зачем маркировать</div>
+  <h2>Риски без маркировки</h2>
+  <p class="section-intro">Штрафы и конфискация — это лишь начало. Настоящая угроза куда серьёзнее.</p>
+  <div class="risks-layout">
+    <div class="risk-block danger">
+      <div class="risk-label red">Административная ответственность</div>
+      <div class="risk-item"><div class="risk-dot"></div><div class="risk-text">5 000 — 10 000 ₽ для должностных лиц и ИП</div></div>
+      <div class="risk-item"><div class="risk-dot"></div><div class="risk-text">50 000 — 300 000 ₽ для юридических лиц</div></div>
+      <div class="risk-item"><div class="risk-dot"></div><div class="risk-text">Повышенные штрафы для табака, пива и слабоалкогольных напитков</div></div>
+      <div class="risk-highlight">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M9 2L16.5 15H1.5L9 2Z" stroke="#E8007D" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 8V11" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="13.5" r="0.75" fill="#E8007D"/></svg>Уголовная ответственность: штрафы до 1 000 000 ₽ и лишение свободы до 5 лет при стоимости немаркированных товаров от 1,5 млн руб.
+      </div>
+    </div>
+    <div class="risk-block">
+      <div class="risk-label gray">Настоящая угроза</div>
+      <div class="risk-item"><div class="risk-dot"></div><div class="risk-text">Контрагенты откажутся принимать вашу продукцию</div></div>
+      <div class="risk-item"><div class="risk-dot"></div><div class="risk-text">Полная остановка отгрузок немаркированного товара</div></div>
+      <div class="risk-item"><div class="risk-dot"></div><div class="risk-text">Потеря рыночных позиций и клиентской базы</div></div>
+      <div class="risk-highlight">
+        Выход бизнеса из рынка — когда контрагенты откажутся принимать вашу продукцию без надлежащей маркировки.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTION PROCESSES -->
+<section class="production reveal" id="production">
+  <div class="section-label">Процессы на производстве</div>
+  <h2>Производственная линия маркировки</h2>
+  <p class="section-intro">Полный цикл обработки продукции: от печати кода до сборки паллета перед отгрузкой.</p>
+  <div class="prod-pipeline">
+    <div class="prod-step">
+      <div class="prod-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="14" width="24" height="14" rx="2" stroke="#E8007D" stroke-width="1.5"/><path d="M10 14V8H26V14" stroke="#E8007D" stroke-width="1.5"/><rect x="10" y="22" width="16" height="8" stroke="#E8007D" stroke-width="1.5"/><circle cx="26" cy="19" r="1.5" fill="#E8007D"/><path d="M10 26H26M10 29H20" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <div class="prod-step-name">Печать</div>
+      <div class="prod-step-desc">Генерация и печать кодов DataMatrix на принтере или напрямую на упаковке</div>
+    </div>
+    <div class="prod-connector"><span>→</span></div>
+    <div class="prod-step">
+      <div class="prod-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 6H22L30 14V30H8V6Z" stroke="#E8007D" stroke-width="1.5" stroke-linejoin="round"/><path d="M22 6V14H30" stroke="#E8007D" stroke-width="1.5"/><path d="M13 19H23M13 23H20" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round"/><rect x="13" y="11" width="5" height="5" stroke="#E8007D" stroke-width="1.5"/></svg></div>
+      <div class="prod-step-name">Нанесение</div>
+      <div class="prod-step-desc">Этикетирование или прямое нанесение кода на единицу продукции</div>
+    </div>
+    <div class="prod-connector"><span>→</span></div>
+    <div class="prod-step prod-step-highlight">
+      <div class="prod-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="13" stroke="#E8007D" stroke-width="1.5"/><path d="M11 18L15.5 22.5L25 13" stroke="#E8007D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="prod-step-name">Сериализация</div>
+      <div class="prod-step-desc">Присвоение уникального кода DataMatrix и проверка его качества перед передачей в Честный ЗНАК</div>
+    </div>
+    <div class="prod-connector"><span>→</span></div>
+    <div class="prod-step prod-step-highlight">
+      <div class="prod-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 4L30 10V26L18 32L6 26V10L18 4Z" stroke="#E8007D" stroke-width="1.5" stroke-linejoin="round"/><path d="M18 4V32M6 10L18 16L30 10M6 26L18 20L30 26" stroke="#E8007D" stroke-width="1.5"/></svg></div>
+      <div class="prod-step-name">Агрегация</div>
+      <div class="prod-step-desc">Объединение единиц товара в группы — короб, блок, паллет — с привязкой кодов</div>
+    </div>
+    <div class="prod-connector"><span>→</span></div>
+    <div class="prod-step">
+      <div class="prod-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="22" width="28" height="4" rx="1" stroke="#E8007D" stroke-width="1.5"/><rect x="4" y="14" width="12" height="8" rx="1" stroke="#E8007D" stroke-width="1.5"/><rect x="20" y="14" width="12" height="8" rx="1" stroke="#E8007D" stroke-width="1.5"/><rect x="8" y="8" width="8" height="6" rx="1" stroke="#E8007D" stroke-width="1.5"/><rect x="20" y="8" width="8" height="6" rx="1" stroke="#E8007D" stroke-width="1.5"/><path d="M12 26V32M20 26V32M24 26V32" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <div class="prod-step-name">Сборка паллет</div>
+      <div class="prod-step-desc">Финальная сборка и верификация паллета перед передачей в систему и отгрузкой</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTION STAGES -->
+<section class="stages reveal" id="stages">
+  <div class="section-label">Процессы на производстве</div>
+  <h2>Этапы работы с маркировкой</h2>
+  <p class="section-intro">Полный цикл: от регистрации в системе до подачи отчёта о вводе в оборот.</p>
+  <div class="stages-grid">
+    <div class="stage-item">
+      <div class="stage-n">1</div>
+      <div class="stage-name">Начало работы в системе маркировки</div>
+      <div class="stage-desc">УКЭП, ГИС МТ, личный кабинет</div>
+    </div>
+    <div class="stage-item">
+      <div class="stage-n">2</div>
+      <div class="stage-name">Регистрация товаров в КМТ</div>
+      <div class="stage-desc">GS1, карточки, описание номенклатуры</div>
+    </div>
+    <div class="stage-item">
+      <div class="stage-n">3</div>
+      <div class="stage-name">Настройка ПАК для маркировки</div>
+      <div class="stage-desc">Интегратор, оборудование, обучение</div>
+    </div>
+    <div class="stage-item">
+      <div class="stage-n">4</div>
+      <div class="stage-name">Заказ кодов маркировки</div>
+      <div class="stage-desc">Баланс, СУЗ, способ оплаты</div>
+    </div>
+    <div class="stage-item">
+      <div class="stage-n">5</div>
+      <div class="stage-name">Маркировка продукции</div>
+      <div class="stage-desc">Печать и нанесение КМ на товар</div>
+    </div>
+    <div class="stage-item">
+      <div class="stage-n">6</div>
+      <div class="stage-name">Подача отчёта о нанесении</div>
+      <div class="stage-desc">Верификация, квитанция СУЗ</div>
+    </div>
+    <div class="stage-item">
+      <div class="stage-n">7</div>
+      <div class="stage-name">Подача отчёта о вводе в оборот</div>
+      <div class="stage-desc">Финальный шаг — товар в системе</div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section class="solutions reveal" id="solutions">
+  <div class="section-label">Наше решение</div>
+  <h2>Комплексное внедрение маркировки</h2>
+  <p class="section-intro">Мы единственные на рынке, кто решает задачу целиком — от заказа кодов до отправки УПД по ЭДО.</p>
+  <div class="solutions-grid">
+    <div class="sol-card">
+      <div class="sol-top">
+        <div class="sol-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="5" stroke="white" stroke-width="1.5"/><path d="M18 6V10M18 26V30M6 18H10M26 18H30M9.51 9.51L12.34 12.34M23.66 23.66L26.49 26.49M26.49 9.51L23.66 12.34M12.34 23.66L9.51 26.49" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="sol-title">Программная часть</div>
+      </div>
+      <div class="sol-body">
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Установка, настройка и обновление учётной системы 1С</span></div>
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Подключение к системе «Честный ЗНАК»</span></div>
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Автоматический заказ кодов маркировки</span></div>
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Передача отчётов о нанесении и агрегации</span></div>
+      </div>
+    </div>
+    <div class="sol-card">
+      <div class="sol-top dark">
+        <div class="sol-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="20" width="30" height="13" rx="1" stroke="white" stroke-width="1.5"/><rect x="7" y="13" width="8" height="7" stroke="white" stroke-width="1.5"/><rect x="21" y="13" width="8" height="7" stroke="white" stroke-width="1.5"/><path d="M3 20L9 13" stroke="white" stroke-width="1.5"/><path d="M33 20L29 13" stroke="white" stroke-width="1.5"/><path d="M15 20V13M21 20V13" stroke="white" stroke-width="1.5"/><rect x="14" y="25" width="8" height="8" stroke="white" stroke-width="1.5"/></svg></div>
+        <div class="sol-title">Оборудование</div>
+      </div>
+      <div class="sol-body">
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Подбор, установка и настройка печатного оборудования</span></div>
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Станции сериализации и валидации БИТ.IIoT</span></div>
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Аппликаторы, пушеры, датчики продукта</span></div>
+        <div class="sol-point"><div class="sol-point-dot"></div><span>ТСД для мобильных операций</span></div>
+      </div>
+    </div>
+    <div class="sol-card">
+      <div class="sol-top dark">
+        <div class="sol-icon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 14L18 6L32 14V32H4V14Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><rect x="12" y="22" width="12" height="10" stroke="white" stroke-width="1.5"/><path d="M12 18H24M8 18H10M26 18H28" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="sol-title">Склад и логистика</div>
+      </div>
+      <div class="sol-body">
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Автоматизация склада и работы с маркированными товарами</span></div>
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Отправка УПД с кодами маркировки по ЭДО</span></div>
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Техническое обслуживание и поддержка</span></div>
+        <div class="sol-point"><div class="sol-point-dot"></div><span>Мониторинг и контроль процессов маркировки</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINT TYPES -->
+<section class="printing reveal">
+  <div class="section-label">Технологии</div>
+  <h2>Типы печати кодов</h2>
+  <p class="section-intro">Подбираем оптимальный метод под вашу упаковку, скорость линии и бюджет.</p>
+  <div class="print-grid">
+    <div class="print-card">
+      <div class="print-num">01</div>
+      <div class="print-name">Термотрансферная</div>
+      <div class="print-desc">Подходит для прямого нанесения и печати на этикетку. Хорошая износостойкость. Расходные материалы: красящая лента (риббон) и носитель.</div>
+      <div class="print-tag">Универсальная</div>
+    </div>
+    <div class="print-card">
+      <div class="print-num">02</div>
+      <div class="print-name">Термоструйная</div>
+      <div class="print-desc">Высококачественное и точное нанесение. Используется на пористых и непористых поверхностях. Подходит для маленьких этикеток.</div>
+      <div class="print-tag">Точная</div>
+    </div>
+    <div class="print-card">
+      <div class="print-num">03</div>
+      <div class="print-name">Пьезоструйная</div>
+      <div class="print-desc">Нанесение напрямую на упаковку чернилами. Подходит для больших объёмов производства. Стоимость печати DataMatrix значительно ниже.</div>
+      <div class="print-tag">Для объёмов</div>
+    </div>
+    <div class="print-card">
+      <div class="print-num">04</div>
+      <div class="print-name">Лазерная</div>
+      <div class="print-desc">Нанесение напрямую по поверхности: бутылки, банки или крышки. Высокая чёткость и износостойкость. Отсутствуют расходные материалы.</div>
+      <div class="print-tag">Премиум</div>
+    </div>
+  </div>
+</section>
+
+<!-- AGGREGATION -->
+<section class="aggregation reveal">
+  <div class="section-label">Агрегация</div>
+  <h2>Типы агрегации</h2>
+  <p class="section-intro">От ручной до полностью автоматической — выбираем подход под вашу производительность.</p>
+  <div class="agg-grid">
+    <div class="agg-card">
+      <div class="agg-head active">
+        <div class="agg-num">01</div>
+        <div class="agg-name">Ручная</div>
+      </div>
+      <div class="agg-body">
+        <div class="agg-item"><div class="plus-icon">+</div><span>Подходит для малых объёмов</span></div>
+        <div class="agg-item"><div class="plus-icon">+</div><span>Разнородная продукция</span></div>
+        <div class="agg-item"><div class="minus-icon">−</div><span>Высокая вероятность ошибок</span></div>
+        <div class="agg-item"><div class="minus-icon">−</div><span>Низкая скорость обработки</span></div>
+        <a href="https://drive.google.com/file/d/1blUCiHOmvaPzYyF1n34lQUbCorIdjsqH/view" target="_blank" class="video-link"><svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L9 6L1 11V1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Видео применения</a>
+      </div>
+    </div>
+    <div class="agg-card">
+      <div class="agg-head">
+        <div class="agg-num">02</div>
+        <div class="agg-name">Гибридная</div>
+      </div>
+      <div class="agg-body">
+        <div class="agg-item"><div class="plus-icon">+</div><span>Инд. и групповые коды на одной ленте</span></div>
+        <div class="agg-item"><div class="plus-icon">+</div><span>Автоматическая привязка агр. кода</span></div>
+        <div class="agg-item"><div class="minus-icon">−</div><span>Высокий риск ошибок</span></div>
+        <a href="https://drive.google.com/file/d/1DlFieobbuxRRgX9-Iy9mgmpstaSEV7Js/view" target="_blank" class="video-link"><svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L9 6L1 11V1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Видео применения</a>
+      </div>
+    </div>
+    <div class="agg-card">
+      <div class="agg-head active">
+        <div class="agg-num">03</div>
+        <div class="agg-name">Ручная со станцией</div>
+      </div>
+      <div class="agg-body">
+        <div class="agg-item"><div class="plus-icon">+</div><span>Автоматическая фиксация в системе</span></div>
+        <div class="agg-item"><div class="plus-icon">+</div><span>Высокая точность</span></div>
+        <div class="agg-item"><div class="plus-icon">+</div><span>Оптимальный баланс цена/качество</span></div>
+        <a href="https://drive.google.com/file/d/1NeRy0ik5mzdiRI6do88YgzVqH2v0rP_S/view" target="_blank" class="video-link"><svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L9 6L1 11V1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Видео применения</a>
+      </div>
+    </div>
+    <div class="agg-card">
+      <div class="agg-head">
+        <div class="agg-num">04</div>
+        <div class="agg-name">Автоматическая</div>
+      </div>
+      <div class="agg-body">
+        <div class="agg-item"><div class="plus-icon">+</div><span>Максимальная производительность</span></div>
+        <div class="agg-item"><div class="plus-icon">+</div><span>Не требует участия оператора</span></div>
+        <div class="agg-item"><div class="plus-icon">+</div><span>Работа 24/7</span></div>
+        <a href="https://drive.google.com/file/d/1sYGt_RkfTjzViVs2qN6-4uR8RUgtTiDN/view" target="_blank" class="video-link"><svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L9 6L1 11V1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Видео применения</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="architecture reveal">
+  <div class="section-label">Архитектура</div>
+  <h2>Архитектура решения БИТ.IIoT</h2>
+  <p class="section-intro">Четырёхуровневая пирамида управления — от ПЛК и датчиков до ERP-системы 1С.</p>
+  <div class="arch-layers" data-stagger-arch>
+    <div class="arch-layer l4">
+      <div class="arch-lnum">L4</div>
+      <div class="arch-lname">ERP</div>
+      <div class="arch-ldesc">1С:ERP Управление предприятием 2 + БИТ.MDT</div>
+    </div>
+    <div class="arch-layer l3">
+      <div class="arch-lnum">L3</div>
+      <div class="arch-lname">MES · WMS</div>
+      <div class="arch-ldesc">PostgreSQL · Spark</div>
+    </div>
+    <div class="arch-layer l2">
+      <div class="arch-lnum">L2</div>
+      <div class="arch-lname">SCADA · HMI · ТСД</div>
+      <div class="arch-ldesc">БИТ.MDT + БИТ.Data Provider</div>
+    </div>
+    <div class="arch-layer l1">
+      <div class="arch-lnum">L1</div>
+      <div class="arch-lname">ПЛК · Пушеры · Датчики</div>
+      <div class="arch-ldesc">Python · Ubuntu</div>
+    </div>
+  </div>
+</section>
+
+<!-- ADVANTAGES -->
+<section class="advantages reveal" id="advantages">
+  <div class="section-label">Почему Первый Бит</div>
+  <h2>Наши преимущества</h2>
+  <p class="section-intro">Более 1 200 станций на 600+ производственных линиях. 35% автоматических станций работают 24/7.</p>
+  <div class="adv-grid">
+    <div class="adv-card">
+      <div class="adv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="#E8007D" stroke-width="1.5"/><circle cx="12" cy="12" r="5" stroke="#E8007D" stroke-width="1.5"/><circle cx="12" cy="12" r="1.5" fill="#E8007D"/><path d="M12 3V6M12 18V21M3 12H6M18 12H21" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <div class="adv-title">Решение бизнес-задачи</div>
+      <div class="adv-desc">Мы единственные на рынке, кто решает задачу целиком: от заказа кодов и нанесения до складской логистики, учёта и отправки УПД с кодами по ЭДО.</div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L20 6V12C20 16.4 16.4 20.2 12 21C7.6 20.2 4 16.4 4 12V6L12 3Z" stroke="#E8007D" stroke-width="1.5" stroke-linejoin="round"/><path d="M8.5 12L10.5 14L15.5 9" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="adv-title">Исключение штрафов</div>
+      <div class="adv-desc">Система гарантирует, что в отгрузку попадёт только продукция, введённая в оборот. Фоновая синхронизация с «Честным ЗНАКом» поддерживает актуальность статусов.</div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3C14.1 5.7 13.1 5.3 12 5.3C9.5 5.3 7.5 7.3 7.5 9.8C7.5 11 8 12.1 8.8 12.9L3.5 18.2L5.8 20.5L11.1 15.2C11.9 16 13 16.5 14.2 16.5C16.7 16.5 18.7 14.5 18.7 12C18.7 10.9 18.3 9.9 17.7 9.3L15.5 11.5L13.5 9.5L15.7 7.3C15.4 6.9 15.1 6.6 14.7 6.3Z" stroke="#E8007D" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+      <div class="adv-title">Гибкость станций</div>
+      <div class="adv-desc">Автоматические станции БИТ.IIoT синхронизируются с ТСД. Операторы могут в реальном времени выполнять корректировки без остановки линии.</div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 3H16V13C16 15.2 14.2 17 12 17C9.8 17 8 15.2 8 13V3Z" stroke="#E8007D" stroke-width="1.5"/><path d="M8 6H5C5 6 4 10 7 11" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round"/><path d="M16 6H19C19 6 20 10 17 11" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round"/><path d="M12 17V20M9 20H15" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <div class="adv-title">Подтверждённый опыт</div>
+      <div class="adv-desc">Более 1 200 станций сериализации и агрегации на 600+ производственных линиях. 35% автоматических станций БИТ.IIoT функционируют в режиме 24/7.</div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="#E8007D" stroke-width="1.5"/><path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="#E8007D" stroke-width="1.5"/><path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="#E8007D" stroke-width="1.5"/><path d="M3 12H21" stroke="#E8007D" stroke-width="1.5"/><path d="M4 8H20M4 16H20" stroke="#E8007D" stroke-width="1.5"/></svg></div>
+      <div class="adv-title">Масштаб</div>
+      <div class="adv-desc">Среди клиентов — производственные площадки, выпускающие более 4 млн кодов в месяц. Облачный архив позволяет работать с историей по миллиардам кодов.</div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 14C5 9 8.1 5 12 5C15.9 5 19 9 19 14" stroke="#E8007D" stroke-width="1.5" stroke-linecap="round"/><rect x="3" y="14" width="4" height="6" rx="1" stroke="#E8007D" stroke-width="1.5"/><rect x="17" y="14" width="4" height="6" rx="1" stroke="#E8007D" stroke-width="1.5"/></svg></div>
+      <div class="adv-title">Поддержка</div>
+      <div class="adv-desc">В подписку включена поддержка по будням с 7:00 до 19:00. Дополнительно доступны круглосуточная поддержка L1/L2 и сервис на английском языке.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- APPLICATION TYPES -->
+<section class="apptypes reveal" id="apptypes">
+  <div class="section-label">Типы нанесения</div>
+  <h2>Этикетирование vs Прямое нанесение</h2>
+  <p class="section-intro">Подбираем метод нанесения под вашу упаковку, скорость линии и задачи производства.</p>
+  <div class="apptypes-grid">
+    <div class="apptype-col">
+      <div class="apptype-header">Этикетирование</div>
+      <div class="apptype-body">
+        <ul class="apptype-points">
+          <li>Код маркировки наносится на этикетку, после готовая этикетка с кодом наносится на продукт</li>
+          <li>Автоматизированное или ручное</li>
+          <li>Производительность и цена оборудования средняя</li>
+          <li>Проще в эксплуатации и обслуживании</li>
+        </ul>
+        <div class="apptype-equip-title">ВАРИАНТЫ ОБОРУДОВАНИЯ</div>
+        <ul class="apptype-equip">
+          <li>Станции предпечати</li>
+          <li>Аппликатор А-150</li>
+          <li>Линейка принтер-аппликаторов Н-ПР</li>
+        </ul>
+        <a href="https://drive.google.com/file/d/1Ahs4Q2SZdu6jc9tKnIXFOpXzR2QDkkaX/view" target="_blank" class="video-link"><svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L9 6L1 11V1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Видео применения</a>
+      </div>
+    </div>
+    <div class="apptype-col">
+      <div class="apptype-header">Прямое нанесение</div>
+      <div class="apptype-body">
+        <ul class="apptype-points">
+          <li>Код маркировки наносится сразу на упаковку на линии упаковки</li>
+          <li>Возможны термоструйная, пьезоструйная и лазерная типы печати</li>
+          <li>Возможность печати человекочитаемой информации и дублировать код</li>
+        </ul>
+        <div class="apptype-equip-title">ВАРИАНТЫ ОБОРУДОВАНИЯ</div>
+        <ul class="apptype-equip">
+          <li>Пролистыватель упаковки</li>
+          <li>Термоструйный принтер Docod</li>
+          <li>Термотрансферный принтер Videojet</li>
+          <li>Система лазерной маркировки FirstBit</li>
+        </ul>
+        <a href="https://drive.google.com/file/d/1AOHXfsKKry8Q5rAcZWXjvAj4igbyylUj/view" target="_blank" class="video-link"><svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L9 6L1 11V1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg> Видео применения</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERIALIZATION -->
+<section class="serialization reveal" id="serialization">
+  <div class="section-label">Контроль качества</div>
+  <h2>Сериализация и валидация</h2>
+  <p class="section-intro">Каждый код проходит проверку перед тем как попасть в систему Честный ЗНАК.</p>
+  <div class="serial-grid">
+    <div class="serial-card">
+      <div class="serial-num">01</div>
+      <div class="serial-title">Генерация кодов</div>
+      <div class="serial-desc">Уникальные коды DataMatrix генерируются в системе управления заказами (СУЗ) и загружаются в оборудование станции БИТ.IIoT.</div>
+      <div class="serial-steps">
+        <div class="serial-step"><div class="serial-step-dot"></div><span>Заказ кодов в личном кабинете Честного ЗНАКа</span></div>
+        <div class="serial-step"><div class="serial-step-dot"></div><span>Загрузка пула кодов на станцию</span></div>
+        <div class="serial-step"><div class="serial-step-dot"></div><span>Привязка к производственному заданию</span></div>
+      </div>
+    </div>
+    <div class="serial-card">
+      <div class="serial-num">02</div>
+      <div class="serial-title">Нанесение и верификация</div>
+      <div class="serial-desc">Станция БИТ.IIoT наносит код на каждую единицу и немедленно проверяет качество сканером — нечитаемые коды автоматически отбраковываются.</div>
+      <div class="serial-steps">
+        <div class="serial-step"><div class="serial-step-dot"></div><span>Печать кода на принтере или аппликаторе</span></div>
+        <div class="serial-step"><div class="serial-step-dot"></div><span>Сканирование и проверка качества кода</span></div>
+        <div class="serial-step"><div class="serial-step-dot"></div><span>Автоматическая отбраковка пушером при браке</span></div>
+      </div>
+    </div>
+    <div class="serial-card">
+      <div class="serial-num">03</div>
+      <div class="serial-title">Подача отчёта</div>
+      <div class="serial-desc">После нанесения система автоматически формирует и отправляет отчёт о нанесении в Честный ЗНАК. Квитанция СУЗ подтверждает успешную сериализацию.</div>
+      <div class="serial-steps">
+        <div class="serial-step"><div class="serial-step-dot"></div><span>Автоматическая верификация КМ</span></div>
+        <div class="serial-step"><div class="serial-step-dot"></div><span>Отправка отчёта о нанесении</span></div>
+        <div class="serial-step"><div class="serial-step-dot"></div><span>Получение квитанции и ввод в оборот</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE DETAIL 1 -->
+<section class="case-detail reveal" id="case1">
+  <div class="section-label">Кейс 01</div>
+  <h2>Прямое нанесение на упаковку<br>и поштучная агрегация</h2>
+  <p class="section-intro">Реализованный проект на производстве смазочных материалов</p>
+  <div class="case-detail-layout">
+    <div class="case-detail-left">
+      <div class="case-detail-block">
+        <div class="case-detail-block-title">ПЕЧАТЬ И НАНЕСЕНИЕ</div>
+        <ul class="case-detail-points">
+          <li>Прямая печать на упаковку с помощью термотрансферного принтера Videojet</li>
+          <li>Нанесение непосредственно на производственной линии без остановки</li>
+        </ul>
+      </div>
+      <div class="case-detail-block">
+        <div class="case-detail-block-title">АГРЕГАЦИЯ</div>
+        <ul class="case-detail-points">
+          <li>Поштучная агрегация в короб через станцию агрегации БИТ.IIoT</li>
+          <li>В случае брака — возможно изъятие единичных кодов с помощью ТСД без остановки линии</li>
+        </ul>
+      </div>
+      <div class="case-detail-result">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline;vertical-align:middle;margin-right:6px"><circle cx="7" cy="7" r="6" stroke="#E8007D" stroke-width="1.2"/><path d="M4.5 7L6 8.5L9.5 5" stroke="#E8007D" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Результат: полная прослеживаемость от единицы товара до короба. Автоматическая передача данных в Честный ЗНАК.
+      </div>
+    </div>
+    <div class="case-photos-grid">
+      <div class="case-photo">
+        <img src="photos/photo01.png" alt="Принтер Videojet на линии">
+      </div>
+      <div class="case-photo">
+        <img src="photos/photo02.png" alt="Станция агрегации БИТ.IIoT">
+      </div>
+      <div class="case-photo">
+        <img src="photos/photo03.png" alt="Панель управления станции">
+      </div>
+      <div class="case-photo">
+        <img src="photos/photo04.png" alt="Промаркированный товар в коробе">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CASE DETAIL 2 -->
+<section class="case-detail reveal" id="case2" style="background: var(--black);">
+  <div class="section-label">Кейс 02</div>
+  <h2>Автоматическое нанесение<br>и послойная агрегация</h2>
+  <p class="section-intro">Реализованный проект на производстве бытовой химии</p>
+  <div class="case-detail-layout">
+    <div class="case-detail-left">
+      <div class="case-detail-block">
+        <div class="case-detail-block-title">ПЕЧАТЬ И НАНЕСЕНИЕ</div>
+        <ul class="case-detail-points">
+          <li>Печать этикеток на станции предпечати БИТ.IIoT</li>
+          <li>Нанесение через автоматический аппликатор без участия оператора</li>
+        </ul>
+      </div>
+      <div class="case-detail-block">
+        <div class="case-detail-block-title">АГРЕГАЦИЯ</div>
+        <ul class="case-detail-points">
+          <li>Групповая агрегация через станцию послойной агрегации БИТ.IIoT</li>
+          <li>Для сборки паллета сканируется код маркировки терминалом сбора данных</li>
+        </ul>
+      </div>
+      <div class="case-detail-result">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline;vertical-align:middle;margin-right:6px"><circle cx="7" cy="7" r="6" stroke="#E8007D" stroke-width="1.2"/><path d="M4.5 7L6 8.5L9.5 5" stroke="#E8007D" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Результат: полная автоматизация от единицы до паллета без участия оператора. Мгновенная передача данных в Честный ЗНАК.
+      </div>
+    </div>
+    <div class="case-photos-grid case-photos-grid--3">
+      <div class="case-photo case-photo--wide">
+        <img src="photos/photo05.png" alt="Производственная линия BLS Engineering">
+      </div>
+      <div class="case-photo">
+        <img src="photos/photo06.png" alt="Станция предпечати на линии">
+      </div>
+      <div class="case-photo">
+        <img src="photos/photo07.png" alt="Агрегированный паллет">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CASE DETAIL 3 -->
+<section class="case-detail reveal" id="case3">
+  <div class="section-label">Кейс 03</div>
+  <h2>Ручное нанесение<br>и гибридная агрегация</h2>
+  <p class="section-intro">Ручная маркировка кондитерской продукции с гибридной агрегацией в короб</p>
+  <div class="case-detail-layout">
+    <div class="case-detail-left">
+      <div class="case-detail-block">
+        <div class="case-detail-block-title">ПЕЧАТЬ И НАНЕСЕНИЕ</div>
+        <ul class="case-detail-points">
+          <li>Печать этикеток на станции предпечати БИТ.IIoT</li>
+          <li>Нанесение вручную оператором на каждую единицу товара</li>
+        </ul>
+      </div>
+      <div class="case-detail-block">
+        <div class="case-detail-block-title">АГРЕГАЦИЯ</div>
+        <ul class="case-detail-points">
+          <li>После всех индивидуальных кодов наносится последний — агрегационный для короба</li>
+          <li>Проверка корректности при сборке паллета: если на коробе останется индивидуальный код, ТСД не сможет его считать и выдаст ошибку</li>
+        </ul>
+      </div>
+      <div class="case-detail-result">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline;vertical-align:middle;margin-right:6px"><circle cx="7" cy="7" r="6" stroke="#E8007D" stroke-width="1.2"/><path d="M4.5 7L6 8.5L9.5 5" stroke="#E8007D" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Результат: простая и надёжная схема для ручного производства. Встроенная защита от ошибок агрегации без автоматики.
+      </div>
+    </div>
+    <div class="case-photos-grid case-photos-grid--3">
+      <div class="case-photo case-photo--wide">
+        <img src="photos/photo08.png" alt="Ручное нанесение этикеток на продукцию">
+      </div>
+      <div class="case-photo">
+        <img src="photos/photo09.png" alt="Короб с агрегационным кодом">
+      </div>
+      <div class="case-photo">
+        <img src="photos/photo10.png" alt="Нанесение этикетки вручную">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CASES -->
+<section class="clients reveal" id="cases">
+  <div class="section-label">Наши клиенты</div>
+  <h2>Нам доверяют лидеры рынка</h2>
+  <p class="section-intro">Более 100 производств внедрили маркировку с Первым Битом</p>
+  <div class="wordcloud">
+    <span class="wc-word wc-xl  wc-pink">ЯШКИНО</span>
+    <span class="wc-word wc-xl">VITEX</span>
+    <span class="wc-word wc-xl  wc-pink">LITOKOL</span>
+    <span class="wc-word wc-lg">НФКЗ</span>
+    <span class="wc-word wc-lg  wc-pink">ЕРМОЛИНО</span>
+    <span class="wc-word wc-lg">Аквалайн</span>
+    <span class="wc-word wc-lg  wc-pink">ВМПАВТО</span>
+    <span class="wc-word wc-md">Евротрейд</span>
+    <span class="wc-word wc-md  wc-pink">Щекиноазот</span>
+    <span class="wc-word wc-md">ГК Квалитет</span>
+    <span class="wc-word wc-md  wc-pink">HAAS Russia</span>
+    <span class="wc-word wc-md">КССС</span>
+    <span class="wc-word wc-md  wc-pink">СВОБОДА Москва</span>
+    <span class="wc-word wc-md">Твинс Тэк</span>
+    <span class="wc-word wc-sm  wc-pink">Hobby World</span>
+    <span class="wc-word wc-sm">Десятое Королевство</span>
+    <span class="wc-word wc-sm  wc-pink">Estilab</span>
+    <span class="wc-word wc-sm">ВБЦЗ</span>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-content">
+    <div class="section-label" style="text-align:center">Начать работу</div>
+    <h2>Готовы внедрить маркировку?</h2>
+    <p>Посетите наш шоурум или запишитесь на онлайн-демо с экспертом. Протестируйте маркировку на вашей продукции.</p>
+    <div class="cta-btns">
+      <a href="#contacts" class="btn-primary">Связаться с нами →</a>
+      <a href="#contacts" class="btn-ghost">Записаться на демо</a>
+    </div>
+    <div class="contact-info">
+      Шоурум: г. Москва, Воронцовская улица, 35Ас1 &nbsp;·&nbsp;
+      <a href="https://1bit.ru">1bit.ru</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTS -->
+<section class="contacts-section reveal" id="contacts">
+  <div class="section-label">Контакты</div>
+  <h2>Готовы обсудить проект</h2>
+  <p class="section-intro">Ответим на вопросы и согласуем детали в удобном формате</p>
+  <div class="contacts-grid">
+    <a href="/cdn-cgi/l/email-protection#a9e6e8e4dcd3d0c2c8e998cacbc0dd87dbdc" class="contact-card">
+      <div class="contact-type">EMAIL</div>
+      <div class="contact-value">OAMuzyka@1cbit.ru</div>
+    </a>
+    <a href="tel:+79522225077" class="contact-card">
+      <div class="contact-type">ТЕЛЕФОН</div>
+      <div class="contact-value">+7 (952) 222-50-77</div>
+    </a>
+    <a href="https://t.me/muzyka_ole" target="_blank" class="contact-card">
+      <div class="contact-type">TELEGRAM</div>
+      <div class="contact-value">@muzyka_ole</div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">первый<span style="color:var(--pink)">бит</span> &nbsp;·&nbsp; Промышленная маркировка</div>
+  <div>© 2026 Первый Бит &nbsp;·&nbsp; <a href="https://1bit.ru">1bit.ru</a></div>
+</footer>
+
+
+<script>
+  // ══════════════════════════════════════════════════
+  // SCROLL REVEAL — базовая анимация появления секций
+  // ══════════════════════════════════════════════════
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
+  reveals.forEach(r => revealObserver.observe(r));
+
+  // Проверяем видимые элементы при загрузке
+  window.addEventListener('load', () => {
+    reveals.forEach(r => {
+      const rect = r.getBoundingClientRect();
+      if (rect.top < window.innerHeight) r.classList.add('visible');
+    });
+  });
+
+  // ══════════════════════════════════════════════════
+  // COUNTER ANIMATION — Odometer Effect
+  // Паттерн: animated number roll для ключевых метрик
+  // ══════════════════════════════════════════════════
+  function animateCounter(el) {
+    const raw = el.textContent.trim();
+    // Извлекаем числовую часть и суффикс
+    const match = raw.match(/^([\d\s.,]+)(.*)/);
+    if (!match) return;
+    
+    const numStr = match[1].replace(/\s/g, '').replace(',', '.');
+    const suffix = match[2] || '';
+    const target = parseFloat(numStr);
+    
+    if (isNaN(target)) return;
+    
+    const duration = 1800;
+    const start = performance.now();
+    
+    el.classList.add('counting');
+    
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // Easing: easeOutExpo
+      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      
+      const current = target * eased;
+      
+      // Форматируем число
+      let display;
+      if (target >= 1000) {
+        display = Math.round(current).toLocaleString('ru-RU').replace(/,/g, ' ');
+      } else if (target % 1 !== 0) {
+        display = current.toFixed(1);
+      } else {
+        display = Math.round(current).toString();
+      }
+      
+      el.textContent = display + suffix;
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        el.textContent = raw; // Восстанавливаем точное оригинальное значение
+        el.classList.remove('counting');
+      }
+    }
+    
+    requestAnimationFrame(update);
+  }
+
+  // Наблюдаем за числами — запускаем counter при появлении
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        animateCounter(e.target);
+        counterObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.stat-num, .num-big').forEach(el => {
+    counterObserver.observe(el);
+  });
+
+  // ══════════════════════════════════════════════════
+  // ARCHITECTURE PYRAMID — стаггерная анимация
+  // Паттерн: Cascade Reveal снизу вверх (L1→L4)
+  // ══════════════════════════════════════════════════
+  // ── ARCH OBSERVER — надёжный триггер пирамиды ──
+  // threshold: 0 + rootMargin чтобы не упустить момент
+  const archObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        archObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -80px 0px' });
+
+  document.querySelectorAll('[data-stagger-arch]').forEach(el => {
+    archObserver.observe(el);
+  });
+
+  // Проверяем при загрузке — вдруг секция уже в viewport
+  window.addEventListener('load', () => {
+    document.querySelectorAll('[data-stagger-arch]').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 80) {
+        el.classList.add('visible');
+      }
+    });
+  });
+
+  // ══════════════════════════════════════════════════
+  // NAV ACTIVE STATE — подсвечивает текущий раздел
+  // ══════════════════════════════════════════════════
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a[href^="#"]');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+
+  // ══════════════════════════════════════════════════
+  // HERO GRID PARALLAX — лёгкий параллакс на сетке
+  // Паттерн: Subtle Depth через transform на скролле
+  // ══════════════════════════════════════════════════
+  const heroGrid = document.querySelector('.hero-grid');
+  if (heroGrid) {
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const heroHeight = document.querySelector('.hero').offsetHeight;
+      if (scrollY < heroHeight) {
+        const offset = scrollY * 0.2;
+        heroGrid.style.transform = `translateY(${offset}px)`;
+      }
+    }, { passive: true });
+  }
+
+  // ══════════════════════════════════════════════════
+  // MAGNETIC BUTTONS — кнопки тянутся к курсору
+  // Паттерн: Magnetic UI — топ-эффект агентств уровня 
+  // Huge Design, Fantasy.co
+  // ══════════════════════════════════════════════════
+  document.querySelectorAll('.btn-primary, .btn-ghost').forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = `translate(${x * 0.15}px, ${y * 0.25}px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+      btn.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      setTimeout(() => { btn.style.transition = ''; }, 400);
+    });
+  });
+
+  // ══════════════════════════════════════════════════
+  // WORDCLOUD RANDOM FLOAT — разные задержки у слов
+  // Уже сделано через CSS nth-child, дополнительно
+  // добавляем рандомную задержку при загрузке
+  // ══════════════════════════════════════════════════
+  document.querySelectorAll('.wc-word').forEach(word => {
+    const delay = (Math.random() * 6).toFixed(2);
+    const duration = (5 + Math.random() * 3).toFixed(2);
+    word.style.animationDelay = `-${delay}s`;
+    word.style.animationDuration = `${duration}s`;
+  });
+
+
+  // ── DATAMATRIX ГЕНЕРАЦИЯ ──────────────────────
+  // Реальный паттерн DataMatrix (упрощённый для визуала)
+  (function generateDM() {
+    const container = document.getElementById('dmCode');
+    if (!container) return;
+    const pattern = [
+      1,1,1,1,1,1,1,1,
+      1,0,1,0,1,1,0,0,
+      1,1,0,0,1,0,1,0,
+      1,0,1,1,0,0,0,0,
+      1,1,1,0,0,1,1,0,
+      1,0,0,1,1,0,0,0,
+      1,1,0,0,0,1,0,0,
+      1,1,1,1,1,1,1,1,
+    ];
+    pattern.forEach((bit, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'dm-cell' + (bit ? '' : ' empty');
+      // Случайный flickering с разными задержками
+      if (bit && Math.random() > 0.6) {
+        cell.style.animationDuration = (3 + Math.random() * 3).toFixed(1) + 's';
+        cell.style.animationDelay = (Math.random() * 4).toFixed(1) + 's';
+        cell.style.animation = `dmFlicker ${(3 + Math.random() * 3).toFixed(1)}s ease-in-out ${(Math.random() * 2).toFixed(1)}s infinite`;
+      }
+      container.appendChild(cell);
+    });
+  })();
+
+</script>
+</body>
+</html>
