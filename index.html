@@ -22,6 +22,9 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* Улучшаем tap-targets на мобильных — минимум 44px */
+  a, button { -webkit-tap-highlight-color: transparent; }
+
   html { scroll-behavior: smooth; }
 
   body {
@@ -94,23 +97,51 @@
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.5; transform: scale(1.4); }
   }
+
+  /* ── HERO LINE REVEAL — стили для split-text анимации ── */
+  /* Паттерн: Mask Reveal — текст выезжает из-за маски      */
+  .hero-line-wrap {
+    display: block;
+    overflow: hidden; /* маска — скрывает .hero-line-inner до анимации */
+  }
+  .hero-line-inner {
+    display: block;
+    /* Начальное состояние — скрыт под маской */
+    transform: translateY(110%);
+    opacity: 0;
+    animation: lineReveal .8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  /* Задержки для каждой строки — stagger эффект */
+  .hero-line-inner.l1 { animation-delay: .05s; }
+  .hero-line-inner.l2 { animation-delay: .15s; }
+  .hero-line-inner.l3 { animation-delay: .25s; }
+
+  @keyframes lineReveal {
+    from { transform: translateY(110%); opacity: 0; }
+    to   { transform: translateY(0);   opacity: 1; }
+  }
+
+  /* Fallback: если анимация не сработала за 1.2s — принудительно показываем */
+  /* Это CSS-only fallback через animation-fill-mode и очень короткий таймер */
   h1 {
     font-family: 'Unbounded', sans-serif;
     font-size: clamp(36px, 6vw, 80px);
     font-weight: 900; line-height: 1.05;
     letter-spacing: -0.02em;
-    animation: fadeUp .7s ease .1s both;
+    /* Убираем animation с both — h1 сам по себе всегда видим,
+       анимируются только .hero-line-inner внутри него */
   }
   h1 em { font-style: normal; color: var(--pink); }
   .hero-sub {
     margin-top: 24px; max-width: 560px;
     font-size: 18px; line-height: 1.6;
     color: rgba(255,255,255,0.65);
-    animation: fadeUp .7s ease .2s both;
+    /* forwards вместо both — элемент виден до начала анимации */
+    animation: fadeUp .7s ease .3s forwards;
   }
   .hero-cta {
     display: flex; gap: 16px; margin-top: 48px; flex-wrap: wrap;
-    animation: fadeUp .7s ease .3s both;
+    animation: fadeUp .7s ease .45s forwards;
   }
   .btn-primary {
     display: inline-flex; align-items: center; gap: 10px;
@@ -120,6 +151,9 @@
     padding: 16px 32px; border-radius: 4px;
     text-decoration: none; border: none; cursor: pointer;
     transition: all .25s;
+    /* Минимальный touch-target для мобильных */
+    min-height: 44px;
+    will-change: transform;
   }
   .btn-primary:hover { background: var(--pink-light); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(232,0,125,0.4); }
   .btn-ghost {
@@ -131,12 +165,14 @@
     border: 1px solid rgba(255,255,255,0.2);
     text-decoration: none; cursor: pointer;
     transition: all .25s;
+    /* Минимальный touch-target для мобильных */
+    min-height: 44px;
   }
   .btn-ghost:hover { border-color: var(--pink); color: var(--pink); }
   .hero-stats {
     display: flex; gap: 48px; margin-top: 72px; padding-top: 48px;
     border-top: 1px solid rgba(255,255,255,0.08);
-    animation: fadeUp .7s ease .4s both;
+    animation: fadeUp .7s ease .6s forwards;
     flex-wrap: wrap;
   }
   .stat-num {
@@ -771,9 +807,19 @@
     /* SERIAL */
     .serial-grid { grid-template-columns: 1fr 1fr; }
 
+    /* APPTYPES */
+    .apptypes-grid { grid-template-columns: 1fr; gap: 16px; }
+
     /* CASE DETAIL */
     .case-detail-layout { grid-template-columns: 1fr; gap: 32px; }
     .case-photos-grid { grid-template-columns: 1fr 1fr; }
+
+    /* WORDCLOUD */
+    .wc-xl { font-size: clamp(28px, 5vw, 48px); }
+    .wc-lg { font-size: clamp(20px, 3.5vw, 36px); }
+
+    /* CONTACT VALUE — уменьшаем */
+    .contact-value { font-size: 16px; }
 
     /* CONTACTS */
     .contacts-grid { grid-template-columns: 1fr; }
@@ -861,12 +907,194 @@
     .cta-btns .btn-ghost { width: 100%; max-width: 320px; justify-content: center; }
     .contact-info { font-size: 13px; }
 
-    /* HOW MONITOR */
+    /* SERIAL — 1 колонка */
+    .serial-grid { grid-template-columns: 1fr; }
+
+    /* CASE DETAIL — стакаем */
+    .case-photos-grid,
+    .case-photos-grid--3 { grid-template-columns: 1fr 1fr; gap: 4px; }
+    .case-photo--wide { aspect-ratio: 16/9; }
+
+    /* MONITOR — уменьшаем */
     .hero-monitor { max-height: 380px; }
 
     /* SECTION */
     section { padding: 64px 20px; }
     h2 { font-size: clamp(24px, 5vw, 40px); }
+  }
+
+  /* ── APPTYPES GRID — базовые стили ──────────────── */
+  .apptypes-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .apptype-col {
+    background: var(--gray-800); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px; overflow: hidden;
+  }
+  .apptype-header {
+    font-family: 'Unbounded', sans-serif; font-size: 14px;
+    font-weight: 700; padding: 20px 24px;
+    background: var(--pink); color: var(--white);
+  }
+  .apptype-body { padding: 24px; }
+  .apptype-points { list-style: none; margin-bottom: 20px; }
+  .apptype-points li {
+    font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.75);
+    margin-bottom: 10px; padding-left: 16px; position: relative;
+  }
+  .apptype-points li::before {
+    content: '→'; position: absolute; left: 0; color: var(--pink); font-size: 12px;
+  }
+  .apptype-equip-title {
+    font-family: 'Unbounded', sans-serif; font-size: 9px;
+    font-weight: 700; letter-spacing: 0.15em; color: rgba(255,255,255,0.35);
+    margin-bottom: 10px;
+  }
+  .apptype-equip { list-style: none; }
+  .apptype-equip li {
+    font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 6px;
+    padding-left: 14px; position: relative;
+  }
+  .apptype-equip li::before {
+    content: '·'; position: absolute; left: 0; color: var(--pink);
+  }
+
+  /* ── SERIAL GRID — базовые стили ──────────────── */
+  .serial-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .serial-card {
+    background: var(--gray-800); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px; padding: 32px;
+  }
+  .serial-num {
+    font-family: 'Unbounded', sans-serif; font-size: 40px;
+    font-weight: 900; color: rgba(232,0,125,0.2); line-height: 1; margin-bottom: 12px;
+  }
+  .serial-title {
+    font-family: 'Unbounded', sans-serif; font-size: 14px;
+    font-weight: 700; color: var(--pink); margin-bottom: 12px; line-height: 1.3;
+  }
+  .serial-desc { font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.65); margin-bottom: 20px; }
+  .serial-step {
+    display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px;
+  }
+  .serial-step-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: var(--pink);
+    flex-shrink: 0; margin-top: 8px;
+  }
+  .serial-step span { font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.5); }
+
+  /* ── CASE DETAIL — базовые стили ───────────────── */
+  .case-detail { background: var(--gray-900); }
+  .case-detail-layout {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;
+  }
+  .case-detail-block { margin-bottom: 28px; }
+  .case-detail-block-title {
+    font-family: 'Unbounded', sans-serif; font-size: 9px;
+    font-weight: 700; letter-spacing: 0.15em; color: rgba(255,255,255,0.35);
+    margin-bottom: 12px;
+  }
+  .case-detail-points { list-style: none; }
+  .case-detail-points li {
+    font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.75);
+    margin-bottom: 10px; padding-left: 18px; position: relative;
+  }
+  .case-detail-points li::before {
+    content: '—'; position: absolute; left: 0; color: var(--pink); font-size: 12px;
+  }
+  .case-detail-result {
+    margin-top: 20px; padding: 16px 20px;
+    background: rgba(232,0,125,0.07); border: 1px solid rgba(232,0,125,0.2);
+    border-radius: 6px; font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.8);
+  }
+  .case-photos-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+  }
+  .case-photos-grid--3 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .case-photo {
+    background: var(--gray-700); border-radius: 4px; overflow: hidden;
+    aspect-ratio: 4/3;
+  }
+  .case-photo img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .case-photo--wide {
+    grid-column: 1 / -1; aspect-ratio: 16/7;
+  }
+
+  /* ── HERO MONITOR — базовые стили ──────────────── */
+  .hero-monitor {
+    background: var(--gray-800); border: 1px solid rgba(232,0,125,0.2);
+    border-radius: 8px; overflow: hidden;
+  }
+  .monitor-header {
+    background: var(--gray-700); padding: 12px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .monitor-title {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--pink); font-weight: 500;
+  }
+  .monitor-dots { display: flex; gap: 6px; }
+  .monitor-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+  .monitor-body { padding: 16px; }
+
+  /* Terminal log */
+  .terminal-log { margin-bottom: 16px; }
+  .log-line { display: flex; gap: 8px; margin-bottom: 6px; font-family: 'JetBrains Mono', monospace; font-size: 10px; line-height: 1.4; }
+  .log-time { color: rgba(255,255,255,0.3); }
+  .log-ok { color: #4ade80; }
+  .log-info { color: #60a5fa; }
+  .log-warn { color: #fbbf24; }
+  .log-msg { color: rgba(255,255,255,0.7); }
+
+  /* DataMatrix visual */
+  .dm-visual { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 4px; }
+  .dm-code { display: grid; grid-template-columns: repeat(8, 12px); gap: 1px; }
+  .dm-cell { width: 12px; height: 12px; background: var(--pink); border-radius: 1px; }
+  .dm-cell.empty { background: transparent; }
+  @keyframes dmFlicker { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .dm-label { font-family: 'Unbounded', sans-serif; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 0.1em; }
+  .dm-code-text { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--pink); margin-top: 4px; word-break: break-all; }
+
+  /* Production lines progress */
+  .prod-lines { display: flex; flex-direction: column; gap: 10px; }
+  .prod-line-item {}
+  .prod-line-header { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+  .prod-line-val { color: var(--pink); font-weight: 700; }
+  .prod-line-bar { height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+  .prod-line-fill { height: 100%; background: var(--pink); border-radius: 2px; }
+
+  /* ── WORDCLOUD — базовые стили ──────────────────── */
+  .wordcloud {
+    display: flex; flex-wrap: wrap; gap: 12px 20px;
+    align-items: center; justify-content: center;
+    padding: 40px 0;
+  }
+  .wc-word {
+    font-family: 'Unbounded', sans-serif; font-weight: 900;
+    color: rgba(255,255,255,0.15); letter-spacing: -0.02em;
+    line-height: 1; cursor: default; user-select: none;
+    animation: wcFloat 6s ease-in-out infinite;
+    transition: color .3s;
+  }
+  .wc-word:hover { color: rgba(255,255,255,0.6); }
+  .wc-pink { color: rgba(232,0,125,0.4); }
+  .wc-pink:hover { color: var(--pink); }
+  .wc-xl { font-size: clamp(36px, 6vw, 64px); }
+  .wc-lg { font-size: clamp(24px, 4vw, 44px); }
+  .wc-md { font-size: clamp(18px, 3vw, 32px); }
+  .wc-sm { font-size: clamp(14px, 2vw, 22px); }
+  @keyframes wcFloat {
+    0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)}
   }
 
   /* ── СМАРТФОН: 480px ──────────────────────────── */
@@ -904,9 +1132,15 @@
     .wc-md { font-size: clamp(15px, 4vw, 24px); }
     .wc-sm { font-size: clamp(12px, 3vw, 18px); }
 
+    /* SERIAL — 1 колонка, компактно */
+    .serial-num { font-size: 28px; }
+
     /* CASE PHOTOS — 1 колонка */
     .case-photos-grid { grid-template-columns: 1fr; }
     .case-photo--wide { aspect-ratio: 16/9; }
+
+    /* APPTYPES — уменьшаем паддинг */
+    .apptype-body { padding: 16px; }
 
     /* ARCHITECTURE — компактно */
     .arch-layer { padding: 12px 16px; }
@@ -929,6 +1163,28 @@
 
     /* FOOTER */
     footer { padding: 24px 16px; font-size: 12px; }
+  }
+
+  /* ══════════════════════════════════════════════════
+     ДОСТУПНОСТЬ: Уважаем настройку "Уменьшить движение"
+     Паттерн: prefers-reduced-motion — стандарт a11y
+     Пользователи с вестибулярными нарушениями скажут спасибо
+  ══════════════════════════════════════════════════ */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .hero-badge, h1, .hero-sub, .hero-cta, .hero-stats {
+      animation: none !important;
+    }
+    /* hero-line — сразу показываем без анимации */
+    .hero-line-inner {
+      transform: none !important;
+      opacity: 1 !important;
+      animation: none !important;
+    }
+    @keyframes fadeUp  { from { opacity: 1; transform: none; } }
+    @keyframes pulse   { from { opacity: 1; transform: none; } }
+    @keyframes wcFloat { from { transform: none; } }
+    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
   }
 
 </style>
@@ -1753,9 +2009,9 @@
   <h2>Готовы обсудить проект</h2>
   <p class="section-intro">Ответим на вопросы и согласуем детали в удобном формате</p>
   <div class="contacts-grid">
-<a href="mailto:OAMuzyka@1cbit.ru?subject=Запрос на внедрение маркировки" class="contact-card">
+<a href="/cdn-cgi/l/email-protection#a2ede3efd7d8dbc9c3e293c1c0cbd68cd0d79dd1d7c0c8c7c1d69f72357212721d7322721c732382721f7212827210721f7217721673227217721f721a721782721e721273227218721a7322721c72107218721a" class="contact-card">
       <div class="contact-type">EMAIL</div>
-      <div class="contact-value">OAMuzyka@1cbit.ru</div>
+      <div class="contact-value"><span class="__cf_email__" data-cfemail="226d636f57585b4943621341404b560c5057">[email&#160;protected]</span></div>
     </a>
     <a href="tel:+79522225077" class="contact-card">
       <div class="contact-type">ТЕЛЕФОН</div>
@@ -1775,11 +2031,24 @@
 </footer>
 
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // ══════════════════════════════════════════════════
   // SCROLL REVEAL — базовая анимация появления секций
+  // Фикс: убран rootMargin -60px который мешал срабатыванию.
+  // Добавлен тройной fallback: DOMContentLoaded + load + timeout
   // ══════════════════════════════════════════════════
   const reveals = document.querySelectorAll('.reveal');
+
+  // Функция принудительной проверки — показать всё что уже в viewport
+  function checkRevealInView() {
+    reveals.forEach(r => {
+      const rect = r.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 10) {
+        r.classList.add('visible');
+      }
+    });
+  }
+
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -1787,16 +2056,15 @@
         revealObserver.unobserve(e.target);
       }
     });
-  }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
+  // rootMargin убран — не обрезаем зону срабатывания
+  }, { threshold: 0 });
   reveals.forEach(r => revealObserver.observe(r));
 
-  // Проверяем видимые элементы при загрузке
-  window.addEventListener('load', () => {
-    reveals.forEach(r => {
-      const rect = r.getBoundingClientRect();
-      if (rect.top < window.innerHeight) r.classList.add('visible');
-    });
-  });
+  // Тройной fallback — срабатывает при любом сценарии загрузки
+  document.addEventListener('DOMContentLoaded', checkRevealInView);
+  window.addEventListener('load', checkRevealInView);
+  // На случай если браузер восстановил скролл-позицию после перезагрузки
+  setTimeout(checkRevealInView, 100);
 
   // ══════════════════════════════════════════════════
   // COUNTER ANIMATION — Odometer Effect
@@ -1911,9 +2179,11 @@
   // ══════════════════════════════════════════════════
   // HERO GRID PARALLAX — лёгкий параллакс на сетке
   // Паттерн: Subtle Depth через transform на скролле
+  // Отключаем на мобильных — экономим CPU и батарею
   // ══════════════════════════════════════════════════
   const heroGrid = document.querySelector('.hero-grid');
-  if (heroGrid) {
+  const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (heroGrid && !isTouchDevice) {
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
       const heroHeight = document.querySelector('.hero').offsetHeight;
@@ -1928,7 +2198,9 @@
   // MAGNETIC BUTTONS — кнопки тянутся к курсору
   // Паттерн: Magnetic UI — топ-эффект агентств уровня 
   // Huge Design, Fantasy.co
+  // Только на устройствах с мышью — не работает на touch
   // ══════════════════════════════════════════════════
+  if (!isTouchDevice) {
   document.querySelectorAll('.btn-primary, .btn-ghost').forEach(btn => {
     btn.addEventListener('mousemove', (e) => {
       const rect = btn.getBoundingClientRect();
@@ -1942,15 +2214,19 @@
       setTimeout(() => { btn.style.transition = ''; }, 400);
     });
   });
+  } // конец if(!isTouchDevice)
 
   // ══════════════════════════════════════════════════
   // WORDCLOUD RANDOM FLOAT — разные задержки у слов
-  // Уже сделано через CSS nth-child, дополнительно
-  // добавляем рандомную задержку при загрузке
+  // На мобильных — уменьшаем амплитуду анимации
+  // чтобы не нагружать GPU на слабых устройствах
   // ══════════════════════════════════════════════════
   document.querySelectorAll('.wc-word').forEach(word => {
     const delay = (Math.random() * 6).toFixed(2);
-    const duration = (5 + Math.random() * 3).toFixed(2);
+    // На мобильных — чуть медленнее для экономии батареи
+    const duration = isTouchDevice
+      ? (8 + Math.random() * 4).toFixed(2)
+      : (5 + Math.random() * 3).toFixed(2);
     word.style.animationDelay = `-${delay}s`;
     word.style.animationDuration = `${duration}s`;
   });
@@ -2001,15 +2277,19 @@
     toggleMenu(!isOpen);
   });
 
-  // Закрываем при клике на ссылку
+  // Закрываем меню при клике на ссылку
   document.querySelectorAll('.nav-mobile-link').forEach(link => {
     link.addEventListener('click', () => toggleMenu(false));
   });
 
-  // Закрываем по Escape
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') toggleMenu(false);
-  });
+  // HERO FALLBACK: если CSS-анимация не сработала — показываем принудительно
+  setTimeout(() => {
+    document.querySelectorAll('.hero-line-inner').forEach(el => {
+      el.style.transform = 'translateY(0)';
+      el.style.opacity = '1';
+      el.style.transition = 'none';
+    });
+  }, 1500);
 
 </script>
 </body>
